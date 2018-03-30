@@ -1,0 +1,13 @@
+ola_plugins:
+  artnet:
+    config:
+      - enabled = true
+      - always_broadcast = yes
+      - long_name = {{inventory_hostname}} ArtNet
+      - short_name = {{inventory_hostname}} ArtNet 
+  uartdmx: 
+    config: 
+      - enabled = true
+      - device = /dev/{{tty_device}}
+      - /dev/{{tty_device}}-break = 100
+      - /dev/{{tty_device}}-malf = 24000

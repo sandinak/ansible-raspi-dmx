@@ -1,0 +1,6 @@
+---
+- include_tasks: plugin/enable.yml
+  when: plugin_name in plugins
+
+- include_tasks: plugin/disable.yml
+  when: plugin_name not in plugins

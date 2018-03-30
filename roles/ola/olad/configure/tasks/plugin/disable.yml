@@ -1,0 +1,6 @@
+- name: disable {{plugin_name}}
+  lineinfile: 
+    path: /etc/ola/ola-{{plugin_name}}.conf
+    line: "enabled = false"
+    regexp: "^enabled.*"
+  notify: restart ola

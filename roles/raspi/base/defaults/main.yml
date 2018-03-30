@@ -1,0 +1,4 @@
+apt_packages:
+  - lsof
+  - tcpdump
+  - nmap

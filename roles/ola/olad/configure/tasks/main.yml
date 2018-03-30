@@ -1,0 +1,11 @@
+---
+- name: install packages
+  apt: 
+    name: "{{item}}"
+  with_items: "{{ola_packages}}"
+  
+- name: configure_plugins
+  include_tasks: plugin.yml
+  with_items: "{{_ola_plugins}}"
+  loop_control:
+    loop_var: plugin_name

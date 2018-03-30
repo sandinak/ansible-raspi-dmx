@@ -1,0 +1,3 @@
+[dmx_controllers]
+dmx-1 	ansible_ssh_host=192.168.11.131 ansible_connection=ssh ansible_ssh_user=pi ansible_ssh_pass=raspberry 
+dmx-2 	ansible_ssh_host=192.168.11.229 ansible_connection=ssh ansible_ssh_user=pi ansible_ssh_pass=raspberry

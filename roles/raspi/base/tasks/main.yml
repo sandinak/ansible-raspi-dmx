@@ -1,0 +1,24 @@
+- name: set hostname
+  hostname:
+    name: "{{inventory_hostname}}"
+  
+- name: update the pi 
+  apt:
+     force: yes
+     update_cache: yes
+     cache_valid_time: 86400
+  register: _apt_update
+     
+- name: upgrade if needed
+  apt:
+     upgrade: yes
+  when: _apt_update is changed
+
+- name: install packages
+  apt: 
+    name: "{{item}}"
+  with_items: "{{apt_packages}}"
+
+- name: check for {{tty_device}} serial device
+  shell: ls /dev/{{tty_device}}
+  changed_when: false

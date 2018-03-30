@@ -1,0 +1,27 @@
+tty_device: ttyAMA0
+
+ola_packages:
+  - ola
+  
+_ola_plugins:
+  - artnet
+  - dummy
+  - e131
+  - espnet
+  - ftdidmx
+  - gpio
+  - karate
+  - kinet
+  - milinst
+  - opendmx
+  - openpixelcontrol
+  - osc
+  - pathport
+  - renard
+  - sandnet
+  - shownet
+  - spi
+  - stageprofi
+  - uartdmx
+  - usbdmx
+  - usbserial

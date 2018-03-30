@@ -1,0 +1,34 @@
+---
+- name: create DMX mode config tool
+  copy:
+    src: files/set_dmx_mode.sh
+    dest: /usr/bin/set_dmx_mode
+    mode: 0755
+  notify: set dmx mode 1
+
+- name: set dmx_mode in rc.local
+  lineinfile:
+    path: /etc/rc.local
+    insertbefore: exit 0
+    line: set_dmx_mode 1
+    regexp: "^set_dmx_mode"
+  notify: set dmx mode 1
+     
+# use split here to only search for the var and replace the data 
+# if it doesn't match.
+- name:  update config.txt
+  lineinfile:
+    path: /boot/config.txt
+    line: "{{item}}"
+    regexp: "^{{item.split('=')[0]}}.*"
+  with_items:
+    - enable_uart=1
+    - dtoverlay=pi3-disable-bt
+    - init_uart_clock=16000000
+  notify: restart raspi
+  
+- name: disable serial getty on {{tty_device}}
+  systemd: 
+    name: serial-getty@{{tty_device}}.service
+    state: stopped
+    enabled: no

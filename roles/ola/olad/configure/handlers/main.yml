@@ -1,0 +1,5 @@
+---
+- name: restart ola
+  service: 
+    name: olad
+    status: restarted 

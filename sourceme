@@ -1,0 +1,11 @@
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export PYCURL_SSL_LIBRARY=openssl
+export ANSIBLE_HOME=${PWD}
+export ANSIBLE_INVENTORY=${PWD}/inventory
+# export ANSIBLE_VAULT_PASSWORD_FILE=~/.ssh/ansible_vault_password.raspi
+
+alias ap=ansible-playbook
+alias av=ansible-vault
+alias avv='ansible-vault view'
+alias ave='ansible-vault edit'
+. venv/bin/activate

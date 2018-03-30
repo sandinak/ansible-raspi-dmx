@@ -1,0 +1,20 @@
+---
+- name: set dmx mode 1
+  become: yes
+  shell: /usr/bin/set_dmx_mode 1
+
+- name: restart raspi
+  block:
+    - name: reboot the host
+      shell: ( sleep 3 && reboot & )
+      async: 0
+      poll: 0
+    
+    - name: wait for the host to come back
+      delegate_to: localhost
+      become: no
+      wait_for: 
+        host: "{{inventory_hostname}}"
+        delay: 10
+        state: started
+        port: 22

@@ -1,0 +1,42 @@
+- name: '{{plugin}} - get plugin id'
+  shell: ola_plugin_info | grep -i {{plugin}} | awk '{print $1}'
+  register: _plugin_id
+  changed_when: false
+    
+- name: '{{plugin}} - get info on plugin id {{_plugin_id.stdout}}'
+  shell: ola_dev_info -p {{_plugin_id.stdout}} 
+  changed_when: false
+  register: _device_info
+
+- set_fact:
+    _port_regex: "port {{port}}"
+
+- name: '{{plugin}} - get device id'
+  set_fact:
+    _device_id:   '{{ _device_info.stdout_lines | 
+                      select("match", "Device") |
+                      first |
+                      regex_replace(".*Device ([0-9]+).*","\1") }}'
+
+- name: '{{plugin}} - get {{_device_id}} port id ({{port}})'
+  set_fact:
+    _port_id:     '{{ _device_info.stdout_lines | 
+                      select("search", _port_regex) |
+                      first |
+                      regex_replace(".*port ([0-9]+).*","\1") }}'
+
+- name: '{{plugin}} - get {{_device_id}}:{{_port_id}} universe id'
+  set_fact:
+    _universe_id: '{{ _device_info.stdout_lines | 
+                      select("search", _port_regex) |
+                      first |
+                      regex_replace(".*universe ([0-9]+).*","\1") }}'
+                        
+- name: '{{plugin}} - patching {{_device_id}}:{{_port_id}} to {{universe}}'
+  shell: 
+    ola_patch 
+      -d {{_device_id}} 
+      -p {{_port_id}}
+      -u {{universe}}
+  when: _universe_id|int != universe
+  notify: restart olad

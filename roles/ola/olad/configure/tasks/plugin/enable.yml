@@ -1,0 +1,10 @@
+- debug: var=plugins[plugin_name]['config']
+
+- name: configure {{plugin_name}}
+  lineinfile: 
+    path: /etc/ola/ola-{{plugin_name}}.conf
+    line: "{{item}}"
+    regexp: "^{{item.split('=')[0]}}.*"
+  with_items: "{{plugins[plugin_name]['config']}}"
+  notify: restart ola
+  
