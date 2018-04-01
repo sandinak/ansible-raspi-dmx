@@ -1,0 +1,6 @@
+---
+
+
+wifi:
+  # used to define radio config
+  country_code: US

@@ -1,0 +1,3 @@
+---
+# path to search in df for the update
+boot_mount_path: /boot

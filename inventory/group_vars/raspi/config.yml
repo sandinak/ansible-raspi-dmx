@@ -1,0 +1,2 @@
+config_txt:
+  - disable_splash = 1

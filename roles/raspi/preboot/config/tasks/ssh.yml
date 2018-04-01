@@ -1,0 +1,5 @@
+---
+- name: enable ssh
+  copy:
+    dest: "{{preboot_mount_path.stdout}}/ssh"
+    content: ''

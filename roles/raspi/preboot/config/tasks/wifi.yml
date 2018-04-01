@@ -1,0 +1,13 @@
+---
+- name: check wifi config for consistency
+  assert:
+    that:
+      - preboot.wifi.ssid | length > 0 
+      - preboot.wifi.psk  | length > 0
+      - preboot.wifi.key_mgmt | length > 0 
+
+- name: setup wpa_supplicant.conf for SSID {{preboot.wifi.ssid}}
+  template:
+    src: wpa_supplicant.conf.j2
+    dest: "{{preboot_mount_path.stdout}}/wpa_supplicant.conf"
+    

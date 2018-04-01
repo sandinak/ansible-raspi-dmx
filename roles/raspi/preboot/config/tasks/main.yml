@@ -1,0 +1,10 @@
+---
+- name: setup boot volume
+  delegate_to: localhost
+  block:
+    - import_tasks: ssh.yml
+      when: preboot.ssh.enabled
+     
+    - import_tasks: wifi.yml
+      when: preboot.wifi.enabled == true
+      

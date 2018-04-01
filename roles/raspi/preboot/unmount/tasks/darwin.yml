@@ -1,0 +1,4 @@
+---
+- name: unmounting {{preboot_mount_device.stdout}} {{preboot_mount_path.stdout}}
+  delegate_to: localhost
+  shell: diskutil unmountDisk {{preboot_mount_device.stdout}}

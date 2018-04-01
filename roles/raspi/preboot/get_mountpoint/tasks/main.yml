@@ -1,0 +1,33 @@
+---
+- name: get preboot mount path
+  delegate_to: localhost
+  changed_when: false
+  shell:
+    df |
+    grep '{{boot_mount_path}}' | 
+    awk '{ print $9 }'
+  register: preboot_mount_path
+
+# need something generic for linux here to get root drive device name
+- name: get preboot mount device
+  delegate_to: localhost
+  changed_when: false
+  shell:
+    df |
+    grep '{{boot_mount_path}}' | 
+    awk '{ print $1 }' |
+    sed 's/s.$//'
+  register: preboot_mount_device
+  
+- name: check output of {{preboot_mount_path.stdout}}
+  assert: 
+    that:
+      - preboot_mount_path.stdout_lines | length == 1
+      - preboot_mount_path.stdout | length > 5
+       
+- name: check output of {{preboot_mount_path.stdout}}
+  assert: 
+    that:
+      - preboot_mount_path.stdout_lines | length == 1
+      - preboot_mount_path.stdout | length > 5
+      

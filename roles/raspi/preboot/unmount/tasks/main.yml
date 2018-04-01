@@ -1,0 +1,15 @@
+---
+
+# yes .. I know this can be done using facts.. however we're trying
+# to get systemname for the localhost whilst the context is the target.
+- name: get OS
+  delegate_to: localhost
+  shell: uname -s 
+  register: _uname_s
+  changed_when: false
+
+- import_tasks: darwin.yml
+  when: "'Darwin' in _uname_s.stdout"
+  
+#- import_tasks: linux.yml
+#  when: "'linux' in ansible_os_family"

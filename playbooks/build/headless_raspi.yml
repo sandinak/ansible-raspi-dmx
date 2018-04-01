@@ -1,0 +1,12 @@
+---
+- name: update preboot environment for raspi
+  hosts: raspi
+  gather_facts: no
+  pre_tasks:
+    - assert:
+        msg: can only run against 1 SD card at a time
+        that: 
+          - play_hosts | length == 1
+  roles:
+    - raspi/preboot/config
+    - raspi/preboot/unmount

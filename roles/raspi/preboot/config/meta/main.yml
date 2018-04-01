@@ -1,0 +1,3 @@
+---
+dependencies:
+  - raspi/preboot/get_mountpoint

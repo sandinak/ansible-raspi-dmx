@@ -1,0 +1,12 @@
+---
+# base config
+preboot:
+  ssh:
+    enabled: true
+  wifi: 
+    enabled:  true
+    ssid:     "{{secrets.wifi.ssid    | default('')}}"
+    psk:      "{{secrets.wifi.psk     | default('')}}"
+    key_mgmt: "{{secrets.wifi.key_mgmt| default('WPA-PSK')}}"
+    country_code: "{{wifi.country_code| default('US')}}"
+       
