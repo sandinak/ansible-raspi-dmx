@@ -1,0 +1,11 @@
+---
+- name: create /etc/ethers.d 
+  raw:
+    if [ ! -d /etc/ethers.d ]; then  \
+      mkdir /etc/ethers.d; \
+    fi
+    
+- debug: var=ethers
+    
+- include_tasks: entry.yml
+  with_dict: "{{ethers}}"

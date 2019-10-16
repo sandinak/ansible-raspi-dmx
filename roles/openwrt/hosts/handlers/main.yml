@@ -1,0 +1,10 @@
+---
+- name: update /etc/hosts
+  raw: 
+    cd /etc/hosts.d;
+    cat * > /etc/hosts
+  notify: restart dnsmasq
+  
+- name: restart dnsmasq
+  raw: 
+    /etc/init.d/dnsmasq restart 

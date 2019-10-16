@@ -1,0 +1,5 @@
+---
+- name: create /etc/ethers/{{item.key}}
+  raw:
+    echo "{{item.value.mac_address}} {{item.key}}" > /etc/ethers.d/{{item.key}}
+  notify: update /etc/ethers

@@ -1,0 +1,11 @@
+---
+- include_tasks: service.yml
+  tags: 
+    - fadecandy
+    - fcserver
+  
+- include_tasks: config.yml
+  tags:
+    - fcserver
+    
+...

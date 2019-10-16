@@ -1,0 +1,10 @@
+---
+- name: update /etc/ethers
+  raw: 
+    cd /etc/ethers.d;
+    cat * > /etc/ethers
+  notify: restart dnsmasq
+  
+- name: restart dnsmasq
+  raw: 
+    /etc/init.d/dnsmasq restart 

@@ -1,0 +1,6 @@
+---
+- name: restart_fcserver
+  become: yes
+  service: 
+    name: fcserver
+    state: restarted

@@ -1,0 +1,67 @@
+---
+- name: install fadecandy service
+  become: yes
+  block: 
+    - name: create build space
+      file:
+        state: directory
+        path: /usr/local/src
+        mode: 0755
+        
+    - name: download/update repo
+      git:
+        repo: "{{ fadecandy.git_repo }}"
+        dest: /usr/local/src/fadecandy
+        force: true
+      register: _local_repo
+      
+    - name: check for /usr/local/bin/fcserver
+      stat:
+        path: /usr/local/bin/fcserver
+      register: _ulb_fcserver
+ 
+    - name: build server
+      when: _local_repo is changed or 
+            _ulb_fcserver.stat.executable == False
+      block:  
+        - name: build fcserver
+          shell: "{{ item }}"
+          args:
+            chdir: /usr/local/src/fadecandy/server
+            creates: fcserver
+          with_items:
+            - make submodules
+            - make
+          register: _fcserver_bin
+
+        - name: install 
+          copy: 
+            remote: true
+            src: /usr/local/src/fadecandy/bin/fcserver-rpi
+            dest: /usr/local/bin/fcserver
+            mode: 0755
+            owner: root
+            group: root
+          when: _fcserver_bin is changed
+          notify: restart_fcserver
+
+        - name: clean fcserver build 
+          shell: make clean
+          args:
+            chdir: /usr/local/src/fadecandy/server
+          when: _local_repo is changed 
+
+    - name: create startup
+      copy:
+        src: fcserver.rc
+        dest: /etc/init.d/fcserver
+        mode: 0755
+        owner: root
+        group: root
+      register: _setup_init
+      
+    - name: register startup
+      shell: update-rc.d fcserver defaults
+      when: _setup_init is changed
+
+...

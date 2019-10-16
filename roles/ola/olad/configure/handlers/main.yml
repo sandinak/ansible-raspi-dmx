@@ -1,5 +1,6 @@
 ---
 - name: restart ola
-  service: 
-    name: olad
-    status: restarted 
+  become: yes
+  shell: service olad restart
+  args: 
+    warn: false
