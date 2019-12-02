@@ -1,0 +1,25 @@
+---
+ola:
+  instance_name: "{{ ansible_hostname }}"
+
+ola_plugins:
+  artnet:
+    config:
+      - enabled = true
+      - always_broadcast = yes
+      - long_name = {{inventory_hostname}} ArtNet
+      - short_name = {{inventory_hostname}} ArtNet 
+  openpixelcontrol:
+    config:
+      - enabled = true
+      - target = 127.0.0.1:7890
+      - target_127.0.0.1:7890_channel = 0
+      - target_127.0.0.1:7890_channel = 1
+      - target_127.0.0.1:7890_channel = 2
+      - target_127.0.0.1:7890_channel = 3
+#      - target_127.0.0.1:7890_channel = 4
+#      - target_127.0.0.1:7890_channel = 5
+#      - target_127.0.0.1:7890_channel = 6
+#      - target_127.0.0.1:7890_channel = 7
+
+...

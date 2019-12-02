@@ -17,5 +17,5 @@ $(ACTIVATE_BIN):
 	chmod +x $@
 
 pip_requirements: $(ACTIVATE_BIN) requirements.txt
-	. venv/bin/activate; PYTHONWARNINGS='ignore:DEPRECATION' pip install -r requirements.txt
+	. venv/bin/activate; PYTHONWARNINGS='ignore:DEPRECATION' pip install --no-cache-dir -r requirements.txt
 

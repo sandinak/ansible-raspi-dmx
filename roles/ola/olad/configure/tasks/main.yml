@@ -4,8 +4,16 @@
     name: "{{item}}"
   with_items: "{{ola_packages}}"
   
+- name: configure server
+  template: 
+    src: ola-server.conf.j2
+    dest: /etc/ola/ola-server.conf
+
 - name: configure_plugins
   include_tasks: plugin.yml
   with_items: "{{_ola_plugins}}"
   loop_control:
     loop_var: plugin_name
+    
+- name: flush handlers
+  meta: flush_handlers

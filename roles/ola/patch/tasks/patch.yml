@@ -1,0 +1,19 @@
+---
+- name: '{{patch.name}} setting up input patch for {{patch.universe}}'
+  include_tasks: input_patch.yml
+  vars:
+    plugin: "{{patch.input.plugin}}"
+    port: "{{patch.input.port}}"
+    universe: "{{patch.universe}}"
+
+- name: '{{patch.name}} setting up output patch for {{patch.universe}}'
+  include_tasks: output_patch.yml
+  vars:
+    plugin: "{{patch.output.plugin}}"
+    port: "{{patch.output.port}}"
+    universe: "{{patch.universe}}"
+   
+- name: '{{patch.name}} setting universe name'
+  become: yes
+  shell: ola_uni_name -u {{patch.universe}} -n "{{patch.name}}"
+

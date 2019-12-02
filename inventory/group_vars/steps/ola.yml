@@ -24,5 +24,3 @@ ola_plugins:
       - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=2
       - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=3
 
-ola_patches:
-  - 

@@ -1,11 +1,45 @@
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export PYCURL_SSL_LIBRARY=openssl
-export ANSIBLE_HOME=${PWD}
-export ANSIBLE_INVENTORY=${PWD}/inventory
-# export ANSIBLE_VAULT_PASSWORD_FILE=~/.ssh/ansible_vault_password.raspi
+#! /bin/sh
 
+export GIT_NAME=$(basename $PWD)
+echo "Setting env for ansible in $GIT_NAME:"
+
+#aliases
 alias ap=ansible-playbook
 alias av=ansible-vault
 alias avv='ansible-vault view'
 alias ave='ansible-vault edit'
-. venv/bin/activate
+
+export ANSIBLE_HOME=${PWD}
+export ANSIBLE_INVENTORY=${PWD}/inventory
+export ANSIBLE_RETRY_FILES_SAVE_PATH=/tmp/${GIT_NAME}
+
+# check pass setup
+if ! eval gpg -k | grep ultimate > /dev/null; then
+  echo "install gpg on this host and create a key"
+  exit 1
+elif ! eval pass > /dev/null; then
+  echo "install pass(1) on this host and initialize a vault ( pass init {{gpg_key_id}}"
+  exit 1
+elif ! pass ansible/$GIT_NAME/ansible_vault_password > /dev/null; then
+  echo "  - creating vault password for $(basename $0):"
+  pass insert ansible/$GIT_NAME/ansible_vault_password
+fi
+
+# setup to use pass(1) with vault passwords
+export ANSIBLE_VAULT_PASSWORD_FILE=${PWD}/bin/ansible_vault_password
+
+# setup VENV crap
+#export VIRTUAL_ENV_DISABLE_PROMPT=1
+#export PYCURL_SSL_LIBRARY=openssl
+
+#if [ ! -d venv ]; then
+#	echo "  - no venv .. creating.. "
+#	virtualenv venv
+#	pip install -r requirements.txt
+#fi
+
+# set prompt 
+# export CONTEXT="($GIT_NAME) "
+# export PS1="${CONTEXT} ${PS1}"
+
+# . venv/bin/activate

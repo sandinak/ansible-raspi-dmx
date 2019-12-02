@@ -1,0 +1,17 @@
+---
+- name: Configure raspi instance for fadecandy
+  hosts: fcservers
+  become: yes
+ 
+  pre_tasks:
+
+  roles:
+#    - fadecandy
+
+    # configure olad with plugins
+    #- { role: ola/olad/configure,
+    #    plugins: "{{ola_plugins}}" }
+
+    # patch ARTNet to openpixel on configured set_universe
+    - { role: ola/patch,
+        patches: "{{ola_patches}}" }

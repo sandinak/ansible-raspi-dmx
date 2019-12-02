@@ -1,0 +1,8 @@
+---
+- name: disable power mgmt for Wifi
+  become: yes
+  lineinfile:
+    path: /etc/network/interfaces
+    regexp: "wireless-power off"
+    line: "wireless-power off"
+  notify: reboot raspi
