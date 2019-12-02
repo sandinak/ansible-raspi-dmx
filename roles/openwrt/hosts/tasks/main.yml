@@ -1,0 +1,9 @@
+---
+- name: create /etc/hosts.d 
+  raw:
+    if [ ! -d /etc/hosts.d ]; then  \
+      mkdir /etc/hosts.d; \
+    fi
+    
+- include_tasks: entry.yml
+  with_dict: "{{hosts}}"

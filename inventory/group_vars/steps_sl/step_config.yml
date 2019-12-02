@@ -1,0 +1,9 @@
+---
+step_config_port: 7890
+
+# set the port for the services
+fcserver_port: "{{ step_config_port }}"
+ola_opc_port: "{{step_config_port}}"
+
+# 4 ports ... 1-5
+ola_universe_id: 1

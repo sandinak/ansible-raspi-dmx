@@ -1,0 +1,13 @@
+[Unit]
+Description=Fade Candy Server Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/fcserver /usr/local/etc/fcserver.json
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

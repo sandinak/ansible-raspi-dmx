@@ -1,0 +1,16 @@
+[Unit]
+Description=Open Lighting Architecture Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/olad  --config /etc/ola
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=olad
+
+[Install]
+WantedBy=fcserver.service
+PartOf=fcserver.service
+BindsTo=fcserver.service
+WantedBy=multi-user.target

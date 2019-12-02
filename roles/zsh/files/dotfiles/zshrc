@@ -1,0 +1,110 @@
+#
+# .zshrc
+#	$Id: .zshrc,v 1.1 2005/04/18 18:18:46 branson Exp $
+
+# stty erase "^H" intr "^C" kill "^U" stop ""
+
+zmodload zsh/terminfo
+bindkey '^[[A' up-line-or-search                                                
+bindkey '^[[B' down-line-or-search
+bindkey '\e[5~'   history-search-backward # PgUp
+bindkey '\e[6~'   history-search-forward  # PgDn
+bindkey '^R'      history-incremental-pattern-search-backward
+
+
+#-- keys
+
+bindkey '^F' forward-char
+bindkey '^B' backward-char
+
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line
+bindkey '^D' delete-char
+
+# options
+setopt all_export                                                       # all parameters defined are exported
+setopt always_to_end                                    # cursor -> EOW on completetion
+setopt append_history                                   # history lists are appended
+setopt auto_list                                                        # list an ambiguious completeion
+setopt auto_menu                                                        # use menu completion after 2 tab
+setopt auto_param_keys                          # remove ambiguios space on tab
+setopt auto_param_slash                         # add slash on tab if dir
+setopt bad_pattern                                              # error on bad glob
+setopt bg_nice                                                          # run all bg jobs at lower prio
+setopt bang_hist                                                        # csh style history
+setopt cdable_vars                                              # if cd var is not a dir try to expn
+setopt csh_junkie_history                       # csh modifiers work on prev cmd
+setopt chase_links
+setopt complete_aliases
+setopt correct
+#setopt correct_all
+setopt equals
+setopt extended_glob
+setopt hash_cmds
+setopt interactive_comments
+setopt list_types
+setopt long_list_jobs           # list jobs in long format
+setopt magic_equal_subst
+setopt notify                   # if a bg job exits .. notify immediate
+unsetopt rm_star_silent
+
+HISTFILE=~/.zsh_history         # where to store zsh config
+HISTSIZE=1024                   # big history
+SAVEHIST=1024                   # big history
+setopt append_history           # append
+setopt hist_ignore_all_dups     # no duplicate
+unsetopt hist_ignore_space      # ignore space prefixed commands
+setopt hist_reduce_blanks       # trim blanks
+setopt hist_verify              # show before executing history commands
+setopt inc_append_history       # add commands as they are typed, don't wait until shell exit 
+setopt bang_hist                # !keyword
+
+zstyle ':completion::complete:*' use-cache on               # completion caching, use rehash to clear
+zstyle ':completion:*' cache-path ~/.zsh/cache              # cache path
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'   # ignore case
+zstyle ':completion:*' menu select=2                        # menu if nb items > 2
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # colorz !
+zstyle ':completion:*::::' completer _expand _complete _ignored _approximate # list of completers to use
+
+# sections completion !
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format $'\e[00;34m%d'
+zstyle ':completion:*:messages' format $'\e[00;31m%d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:manuals' separate-sections true
+
+zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*:processes' list-colors "=(#b) #([0-9]#)*=29=34"
+zstyle ':completion:*:*:killall:*' menu yes select
+zstyle ':completion:*:killall:*' force-list always
+
+_reallyforcefilecompletion() {
+    local prefix_char
+
+    for prefix_char in ' ' $'\t' '=' '+' '-' "'" '"' ')' ':'; do
+        if [[ "$PREFIX" = *${prefix_char}* ]]; then
+            if [[ "$PREFIX" = *[\'\"]* ]]; then
+                compset -q -P "*${prefix_char}"
+            else
+                compset -P "*${prefix_char}"
+            fi
+            _value
+            break
+        fi
+    done
+}
+
+zstyle ':completion:*' completer _complete _reallyforcefilecompletion
+zstyle -e ':completion::complete:-command-::executables' ignored-patterns '
+  [[ "$PREFIX" == ./* ]] && {
+    local -a tmp; set -A tmp ./*(/)
+    : ${(A)tmp::=${tmp// /\\ }}
+    reply=(${(j:|:)tmp})
+  }
+'
+
+source ~/.zshcf/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zshcf/iterm2_shell_integration
+export PATH="/usr/local/opt/python@2/bin:$PATH"

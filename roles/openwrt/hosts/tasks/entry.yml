@@ -1,0 +1,5 @@
+---
+- name: create /etc/hosts.d/{{item.key}}
+  raw:
+    echo "{{item.value.ip_addr}} {{item.key}}" > /etc/hosts.d/{{item.key}}
+  notify: update /etc/hosts

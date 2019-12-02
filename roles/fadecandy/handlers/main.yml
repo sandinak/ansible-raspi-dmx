@@ -1,0 +1,6 @@
+---
+- name: restart fcserver
+  service:
+    name: fcserver.service
+    state: restarted
+    enabled: yes

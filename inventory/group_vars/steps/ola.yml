@@ -1,0 +1,28 @@
+ola_plugins:
+  artnet:
+    config:
+      - enabled=true
+      - always_broadcast=yes
+      - long_name={{inventory_hostname}} Step 
+      - short_name={{inventory_hostname}}
+
+  # our config here is 
+  # - each pixel is 3 channels (rgb) 
+  # - each strip is 64 pixels long or 192 DMX addresses
+  # - each universe is 2 strips or 384 DMX addresses
+  # - QLC can't bridge universes per fixture 
+  # listen_<IP>:<port>_channel = <channel>
+  # The Open Pixel Control channels to use for the specified 
+  # device. Multiple channels can be specified and an input 
+  # port will be created for 
+  openpixelcontrol: 
+    config: 
+      - enabled=true
+      - target=127.0.0.1:{{ ola_opc_port }}
+      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=0
+      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=1
+      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=2
+      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=3
+
+ola_patches:
+  - 

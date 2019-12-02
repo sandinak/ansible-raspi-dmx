@@ -1,0 +1,57 @@
+---
+- name: run apt updates for all base packages
+  become: yes
+  apt: 
+    state: latest
+    upgrade: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+ 
+- name: install base packages {{ raspi_packages | join(',') }}
+  become: yes
+  apt:
+    name: "{{ raspi_packages }}"
+    state: present
+
+- name: install base python tools {{ pip_packages | join(',') }}
+  become: yes
+  pip:
+    name: "{{ pip_packages }}"
+    state: present
+  when: pip_packages is defined
+ 
+- name: run firmware updates
+  become: yes
+  expect: 
+    command: rpi-update
+    responses:
+      'proceed?':
+        - y
+    timeout: 300
+  register: _rpi_update
+  changed_when: '"reboot needed" in _rpi_update'
+  notify: reboot raspi 
+
+- name: add default lines to config.txt
+  become: yes
+  lineinfile:
+    path: /boot/config.txt
+    regexp: "{{ item }}"
+    line: "{{ item }}"
+  with_items: "{{ global.config_txt|default([]) + config_txt }}"
+  notify: reboot raspi
+
+- name: set hostname to {{inventory_hostname}}
+  become: yes
+  hostname:
+    name: "{{inventory_hostname}}"
+
+- name: set hostname at boot
+  become: yes
+  copy: 
+    dest: /etc/hostname
+    content: "{{inventory_hostname}}"
+
+
+...

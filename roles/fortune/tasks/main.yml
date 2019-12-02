@@ -1,0 +1,18 @@
+---
+- name: install fortune packages
+  tags: fortune
+  become: yes
+  package:
+    name:
+      - fortune-mod
+      - fortunes
+      - fortunes-min
+      - fortunes-off
+      
+- name: link fortune into /usr/bin
+  become: yes
+  tags: fortune
+  file:
+    state: link
+    src: /usr/games/fortune
+    path: /usr/bin/fortune

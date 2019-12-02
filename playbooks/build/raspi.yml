@@ -1,0 +1,43 @@
+- name: pre configure hosts
+  hosts: raspi
+  gather_facts: no
+  pre_tasks:
+    - block: 
+        - name: test ssh for key setup
+          delegate_to: localhost
+          changed_when: false
+          check_mode: no
+          shell: ssh 
+            -o StrictHostKeyChecking=no
+            -o PasswordAuthentication=no
+            {{ansible_user}}@{{ansible_ssh_host}} 
+
+      rescue: 
+        - name: set password to default and try again
+          set_fact:
+            ansible_ssh_pass: "{{raspi_default_password}}" 
+          when: raspi_default_password is defined
+         
+    - name: ping
+      ping: 
+         
+    - name: push key from ~/.ssh/id_rsa.pub
+      authorized_key:
+        state: present
+        user: pi
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        
+    - name: set password
+      become: yes
+      user:
+        name: pi
+        password: "{{ default_password_encrypted }}"
+
+- name: configure raspis
+  hosts: raspi
+  gather_facts: yes
+  roles:
+    - zsh
+    - fortune
+    - raspi/config
+    - raspi/iw_config

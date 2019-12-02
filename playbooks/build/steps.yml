@@ -1,0 +1,88 @@
+---
+- import_playbook: raspi.yml
+
+- name: Configure a raspi instance as a Step Controller
+  hosts: steps
+  tags: 
+    - steps
+  become: yes
+  roles:
+    # configure fadecandy
+    - role: fadecandy
+      tags: fcserver
+
+    # configure olad with plugins
+    - role: ola/olad/configure
+      tags: ola
+      plugins: "{{ola_plugins}}"
+
+        
+
+- name: Patch step controller
+  hosts: steps
+  tags: 
+    - steps
+    - patch
+  become: yes
+  roles:
+    # patch ARTNet to uartDMX on configured universe
+    - role: ola/patch
+      tags: patch
+      plugin: artnet
+      type: in
+      ola_port: '0'
+      universe: "{{ola_universe_id}}"
+      universe_name: Step Row 1/2
+
+    - role: ola/patch
+      tags: patch
+      plugin: openpixelcontrol
+      type: out
+      ola_port: '0'
+      universe: "{{ola_universe_id}}"
+
+    - role: ola/patch
+      tags: patch
+      plugin: artnet
+      type: in
+      ola_port: '1'
+      universe: "{{ola_universe_id +1}}"
+      universe_name: Step Row 3/4
+
+    - role: ola/patch
+      tags: patch
+      plugin: openpixelcontrol
+      type: out
+      ola_port: '1'
+      universe: "{{ola_universe_id + 1}}" 
+
+    - role: ola/patch
+      tags: patch
+      plugin: artnet
+      type: in
+      ola_port: '2'
+      universe: "{{ola_universe_id + 2}}" 
+      universe_name: Step Row 5/6
+
+    - role: ola/patch
+      tags: patch
+      plugin: openpixelcontrol
+      type: out
+      ola_port: '2'
+      universe: "{{ola_universe_id + 2}}"
+
+    - role: ola/patch
+      tags: patch
+      plugin: artnet
+      type: in
+      ola_port: '3'
+      universe: "{{ola_universe_id + 3}}"
+      universe_name: Step Row 7/8
+
+    - role: ola/patch
+      tags: patch
+      plugin: openpixelcontrol
+      type: out
+      ola_port: '3'
+      universe: "{{ola_universe_id + 3}}"
+  

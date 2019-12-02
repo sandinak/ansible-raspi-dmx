@@ -1,0 +1,14 @@
+---
+config_txt: []
+
+raspi_packages:
+  - usbutils
+  - git
+  - zsh
+  - lsof
+  - tcpdump
+  - nmap
+  - python-pip
+
+pip_packages:
+  - pexpect

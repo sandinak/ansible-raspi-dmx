@@ -1,0 +1,10 @@
+[Unit]
+Description=iw_config Service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/etc/init.d/iw_config
+
+[Install]
+WantedBy=multi-user.target

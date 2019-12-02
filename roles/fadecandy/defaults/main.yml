@@ -1,0 +1,8 @@
+---
+fadecandy:
+  bin: /usr/local/bin/fcserver
+  git_repo: git://github.com/scanlime/fadecandy
+  working_dir: /home/pi/fadecandy
+
+fcserver_port: 7890
+fcserver_ip: 'null'

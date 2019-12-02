@@ -1,0 +1,8 @@
+---
+zsh_users:
+  - pi
+  - root
+
+zsh_dotfiles:
+  - zshenv
+  - zshrc

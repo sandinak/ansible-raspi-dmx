@@ -1,0 +1,250 @@
+### zsh setup file
+#   My Version
+
+# Version : $Rev$ $LastChangedDate$
+
+PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/libexec:/usr/libexec:/usr/X11R6/bin:/Developer/usr/bin"
+
+
+# export CORRECT_IGNORE='\.*'
+
+#export PATH=${HOME}/Dropbox/bin:${ANSIBLE_HOME}/bin:${PATH}
+# umask 
+# this is set thus so that files are group readable. 
+umask 002
+
+#-- csh compatability
+setenv() { export $1=$2 }
+alias pev printenv
+
+#-- ls aliases 
+alias ls="ls -F"
+alias ll="ls -l"
+alias la="ls -al"
+alias lg="ls -lg"
+alias lsd='ls -ld *(-/DN)'
+
+# rcs
+alias ci='ci -u'
+
+# rdist
+alias rdist="rdist -P /usr/bin/ssh"
+
+#-- per OS commands
+os=`uname -s`
+case $os in 
+	AIX)
+		alias gps="ps -elf | grep -v grep | grep -i"
+		alias rpm_list="rpm -qa | less"
+		alias grpm="rpm -aq | grep "
+		;;
+	Darwin)
+		alias "ipaddr"="ifconfig -a | egrep 'flags|inet'"
+		alias fuck='$(/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/thefuck $(fc -ln -1 | tail -n 1)); fc -R'
+		alias gps="ps auxwww | grep -v grep | grep -i"
+		export PATH=/opt/local/bin:/sw/bin:/usr/local/mysql/bin:${PATH}
+		;;
+	FreeBSD)
+		alias gps="ps -auxwww | grep -v grep | grep -i"
+		alias prelease="export PACKAGESITE=${RELEASE_FTP}"
+		alias pcurrent="export PACKAGESITE=${CURRENT_FTP}"
+		;;
+	Linux)
+		alias "ipaddr"="ip addr"
+		alias fetch='wget -nd'
+		alias gps="ps -elf | grep -v grep | grep -i"
+		alias rpm_list="rpm -qa | less"
+		alias grpm="rpm -aq | grep "
+		alias ls='/bin/ls --color=none -FC'
+		;;
+	SunOS)
+		alias gps="ps -elf | grep -v grep | grep -i"
+		alias df="df -k"
+		alias id="id -a"
+		;;
+	CYGWIN_NT-5.0)
+		alias gps="ps -aWl | grep -v grep | grep -i"
+		;;
+	*) 
+		echo "zshenv: Unknown OS ${os}"
+		;;
+esac
+
+#-- Term aliases
+alias vt100="export TERM='vt100'"
+
+#-- stty aliases
+alias si="stty intr '^C'"
+alias sk="stty intr '^U'"
+alias sane="stty sane"
+
+alias l="echo \!*{*}"
+alias gw="w | grep -v grep | grep"
+
+# correction aliases 
+alias mv='nocorrect mv'
+alias cp='nocorrect cp'
+alias mkdir='nocorrect mkdir'
+alias setenv='nocorrect setenv'
+
+# spelling fixes
+
+#-- use less pagers
+alias mroe=more
+if [ -x /usr/local/bin/less ]; 
+then 
+	export PAGER=less
+	alias more=/usr/local/bin/less 
+elif [ -x /usr/bin/less ]; 
+then
+	export PAGER=less
+	alias more=/usr/bin/less
+else
+	echo "zshenv: less not installed."
+fi
+
+#-- LESS Config
+# -X 	- Don't clear the screen
+# -x2	- 2 char tab stops
+# -i 	- case insensitive
+# -m 	- long prompts
+# -R	- Raw Control to fix colors in ANSI
+export LESS="-X -x2 -i -m -R"
+
+#-- update .files
+alias dotup='svn export svn+ssh://sandsite.org/repo/home/branson --quiet --force'
+
+# history
+alias h='fc -l'
+alias gh='fc -l 100 | grep'
+#export history=1500
+export SAVEHIST=500
+export HISTFILE=~/.history
+export HISTSIZE=500
+
+# Env stuff
+alias path='printenv PATH'
+alias term='printenv TERM'
+
+# addpath functions 
+function addpath { export PATH="${PATH}:$1" }
+function addpathfirst { export PATH="$1:$PATH" }
+function syspath { export
+PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/libexec:/usr/local/libexec:/usr/contrib/bin:/usr/X11R6/bin:${PATH}" }
+
+
+#-- cmd reporting
+export REPORTTIME=10
+
+#-- watch stuff
+export LOGCHECK=300
+export WATCH=notme
+
+#-- check for host command
+if [ ! -x /usr/bin/host ] 
+then
+	alias host="nslookup"
+fi
+
+#-- look for vi
+if [ -x /usr/local/bin/vile ] 
+then
+	if [ $DISPLAY = ':0.0' ] && [ -x /usr/local/bin/xvile ]
+	then
+        export EDITOR=/usr/local/bin/xvile 
+	else 
+        export EDITOR=/usr/local/bin/vile 
+	fi
+elif [ -x /usr/bin/vile ] 
+then
+	export EDITOR=/usr/bin/vile 
+elif [ -x /usr/bin/vi ];
+then
+	export EDITOR=/usr/bin/vi
+elif [ -x /bin/vi ]; 
+then
+	export EDITOR=/bin/vi
+else 
+	echo "zshenv: No vi editor found."
+fi
+
+#-- setup OS based directories as needed
+export rev=`uname -r`
+export platdir="$os$rev"
+export bin="${HOME}/bin/$platdir"
+export PATH="${bin}:${HOME}/bin/scripts:${PATH}:."
+
+#-- fix prompt based on term type
+export HOST=`uname -n | awk -F. '{print $1}'`
+
+#-- do things based on hostname
+case ${HOST} in
+	*Val-3*)
+		#fix for build
+		export FHOST=`uname -n | awk -F. '{print $1 "." $2}'`
+		export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+		;;
+
+	*BRMATHES*) 
+		source ~/.zshcf/home-vars
+		;;
+
+	*metacloud*|*mcp*)
+		source ~/.zshcf/metacloud-vars
+		export FHOST=`uname -n | awk -F. '{print $1 "." $2}'`
+		export HOST=`uname -n | awk -F. '{print $1}'`
+		;;	
+	
+	*)
+		;;
+esac
+
+case $TERM in 
+	xterm*)
+    		precmd () { echo -ne "\e]1; ${CONTEXT}($os) ${LOGNAME}@${FHOST}:${PWD}\a" }
+    		chpwd() { echo -ne "\e]1; ${CONTEXT}($os) ${LOGNAME}@${FHOST}:%~\a" }
+    		export PS1="%B%n@${HOST} %(#.#.>)%b "
+		;;
+	*)
+    		export PS1="%B%n@${FHOST}:%~ %(#.#.>) %b "
+		;;
+esac
+
+#-- AWS
+export AWS_ACCESS_KEY="AKIAJ6VJYDS2LN4FNUWQ"
+export AWS_SECRET_KEY="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"
+export MACADDR_API_KEY="at_BTCJiL8vkcPMgVx2z1ZFzn7iVUBSD"
+
+export PATH="$PATH:~/bin/hosts"
+
+alias ap=ansible-playbook
+# eval $(op signin sandcastle)
+
+fortune -o
+
+export GIT_HOME=~/git
+function gr {
+  if [ -z "${1}" ]; then
+    echo "need git repository to find ... "
+    return 1
+  fi
+
+  # find repo
+  repo=$( ls -d1 ${GIT_HOME}/*${1}* )
+
+  # too many repos
+  if [ $(echo $repo | wc -l ) -ne 1 ]; then
+    echo "need more specific search value.. found"
+    echo $repo
+    return 1
+  fi
+
+  # set repo
+  echo "using ${repo}"
+  chdir ${repo}
+
+  if [ -f ${repo}/sourceme ]; then
+    echo " - sourcing ${repo}/sourceme "
+    . ${repo}/sourceme
+  fi
+}

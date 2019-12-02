@@ -1,0 +1,59 @@
+---
+- name: install packages
+  apt:
+    name: git
+ 
+- name: check install
+  block: 
+    - name: test for existance of {{ fadecandy.bin }}
+      stat:
+        path: "{{ fadecandy.bin }}"
+      register: _fc_repo
+      failed_when: _fc_repo.stat.exists == False
+  rescue:
+    - name: git clone {{fadecandy.git_repo}}
+      git:
+        repo: "{{fadecandy.git_repo}}"
+        dest: "{{fadecandy.working_dir}}"
+        force: true
+
+    - name: build fcserver
+      shell:
+        make submodules all
+      args:
+        chdir: "{{fadecandy.working_dir}}/server"
+        creates: "{{fadecandy.working_dir}}/server/fcserver"
+
+    - name: install server in /usr/local/bin
+      become: yes
+      copy: 
+        remote_src: yes
+        src: "{{fadecandy.working_dir}}/server/fcserver"
+        dest: /usr/local/bin/fcserver
+        mode: 0755
+        owner: root
+        group: root
+
+- name: create startup config /etc/init.d/fcserver
+  become: yes
+  copy: 
+    src: etc/systemd/system/fcserver.service
+    dest: /etc/systemd/system/fcserver.service
+    mode: 0644
+    owner: root
+    group: root
+  register: _startup_config
+
+- name: create config file /usr/local/etc/fcserver.json
+  become: yes
+  template: 
+    src: fcserver.json.j2
+    dest: /usr/local/etc/fcserver.json
+  notify: restart fcserver
+
+- name: start service
+  service: 
+    name: fcserver.service
+    state: started
+    enabled: yes
+

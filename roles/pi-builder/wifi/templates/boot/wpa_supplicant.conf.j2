@@ -1,0 +1,10 @@
+country={{wifi.country_code}}
+update_config=1
+ctrl_interface=/var/run/wpa_supplicant
+
+network={
+    scan_ssid=1
+    ssid="{{wifi.ssid}}"
+    psk="{{wifi.password}}"
+    key_mgmt=WPA-PSK
+}

@@ -1,0 +1,46 @@
+---
+- name: setup raspi config
+  hosts: pi_builder
+  gather_facts: no
+  vars:
+    iso_path: /Users/branson/Documents/Images/2019-09-26-raspbian-buster-lite.img
+
+  pre_tasks:
+    - name: check for mount
+      changed_when: false
+      tags: unmount
+      shell: 
+        diskutil list |
+        grep -B 4 FAT_32 |
+        grep \/dev\/ |
+        awk '{ print $1 }'
+      register: _diskutil_list
+      failed_when: _diskutil_list.stdout_lines | length == 0
+      
+    - name: extract disk name
+      tags: unmount
+      set_fact:
+        disk_device_name: "{{ _diskutil_list.stdout.split('/')[-1] }}"
+ 
+    - name: force unmount disk
+      tags: unmount
+      shell: diskutil unmountDisk force {{disk_device_name}}
+    
+    - name: burn image
+      become: yes
+      shell: dd 
+        if={{iso_path}} 
+        of=/dev/r{{disk_device_name}}
+        bs=512k
+    
+    - name: check for mount 
+      shell: ls /Volumes/boot
+
+    - name: enable ssh
+      file:
+        state: touch
+        path: /Volumes/boot/ssh
+ 
+  roles: 
+    - { role: pi-builder/wifi,
+        tags: wifi }

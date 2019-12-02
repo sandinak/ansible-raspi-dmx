@@ -1,0 +1,31 @@
+---
+- name: install zsh
+  tags: zsh
+  become: yes
+  block: 
+    - name: install zsh
+      package:
+        name: zsh
+
+    - name: copy defaults for pi
+      copy:
+        src: dotfiles/{{item}}
+        dest: /home/pi/.{{item}}
+        owner: pi
+        group: pi
+        mode: 0755
+      with_items: "{{zsh_dotfiles}}"
+
+   # - name: set shell for pi to zsh
+   #   user:
+   #     name: pi
+   #     shell: /usr/bin/zsh
+
+    - name: copy defaults for root
+      copy:
+        src: dotfiles/{{item}}
+        dest: /root/.{{item}}
+        owner: root
+        group: root
+        mode: 0755
+      with_items: "{{zsh_dotfiles}}"
