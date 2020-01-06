@@ -14,12 +14,9 @@ export ANSIBLE_INVENTORY=${PWD}/inventory
 export ANSIBLE_RETRY_FILES_SAVE_PATH=/tmp/${GIT_NAME}
 
 # check pass setup
-if ! eval gpg -k | grep ultimate > /dev/null; then
-  echo "install gpg on this host and create a key"
-  exit 1
-elif ! eval pass > /dev/null; then
+if ! eval pass > /dev/null; then
   echo "install pass(1) on this host and initialize a vault ( pass init {{gpg_key_id}}"
-  exit 1
+  return 1
 elif ! pass ansible/$GIT_NAME/ansible_vault_password > /dev/null; then
   echo "  - creating vault password for $(basename $0):"
   pass insert ansible/$GIT_NAME/ansible_vault_password
