@@ -1,0 +1,14 @@
+---
+- name: force OLAd restart to write files
+  become: yes
+  service:
+    name: olad
+    state: restart
+
+- name: ensure OLAd config files are created
+  file:
+    path: '{{item}}'
+    state: file
+  with_items:
+    - /etc/olad/ola-universe.conf
+    - /etc/olad/ola-port.conf

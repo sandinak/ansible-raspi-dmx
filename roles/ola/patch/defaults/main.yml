@@ -1,0 +1,6 @@
+---
+flags: 
+  'in': '--input'
+  'out': ''
+  
+input_flag: "{{flags[type]}}"

@@ -1,6 +1,4 @@
 ---
-- import_playbook: raspi.yml
-
 - name: Configure a raspi instance as a Step Controller
   hosts: steps
   tags: 
@@ -16,15 +14,17 @@
       tags: ola
       plugins: "{{ola_plugins}}"
 
-        
-
 - name: Patch step controller
   hosts: steps
   tags: 
     - steps
     - patch
   become: yes
+  vars:
+    ola_universe_id: "{{oid}}"
   roles:
+    - role: ola/clean_config
+
     # patch ARTNet to uartDMX on configured universe
     - role: ola/patch
       tags: patch
@@ -36,7 +36,7 @@
 
     - role: ola/patch
       tags: patch
-      plugin: openpixelcontrol
+      plugin: open pixel control
       type: out
       ola_port: '0'
       universe: "{{ola_universe_id}}"
@@ -51,7 +51,7 @@
 
     - role: ola/patch
       tags: patch
-      plugin: openpixelcontrol
+      plugin: open pixel control
       type: out
       ola_port: '1'
       universe: "{{ola_universe_id + 1}}" 
@@ -66,7 +66,7 @@
 
     - role: ola/patch
       tags: patch
-      plugin: openpixelcontrol
+      plugin: open pixel control
       type: out
       ola_port: '2'
       universe: "{{ola_universe_id + 2}}"
@@ -81,8 +81,8 @@
 
     - role: ola/patch
       tags: patch
-      plugin: openpixelcontrol
+      plugin: open pixel control
       type: out
       ola_port: '3'
       universe: "{{ola_universe_id + 3}}"
-  
+ 

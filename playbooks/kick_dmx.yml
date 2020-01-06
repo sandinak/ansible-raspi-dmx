@@ -1,0 +1,13 @@
+---
+- name: kick dmx services on steps
+  hosts: steps
+  tasks:
+    - name: restart olad
+      service: 
+        name: olad
+        state: restarted
+        
+    - name: restart fcserver
+      service:
+        name: fcserver  
+        state: restarted

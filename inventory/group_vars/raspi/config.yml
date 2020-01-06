@@ -1,2 +1,7 @@
-config_txt:
-  - disable_splash = 1
+---
+ansible_user: pi
+raspi_default_password: raspberry
+
+global:
+  config_txt:
+    - disable_splash = 1

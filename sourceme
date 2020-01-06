@@ -29,17 +29,18 @@ fi
 export ANSIBLE_VAULT_PASSWORD_FILE=${PWD}/bin/ansible_vault_password
 
 # setup VENV crap
-#export VIRTUAL_ENV_DISABLE_PROMPT=1
-#export PYCURL_SSL_LIBRARY=openssl
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export PYCURL_SSL_LIBRARY=openssl
 
-#if [ ! -d venv ]; then
-#	echo "  - no venv .. creating.. "
-#	virtualenv venv
-#	pip install -r requirements.txt
-#fi
+if [ ! -d venv ]; then
+	echo "  - no venv .. creating.. "
+	virtualenv venv
+	pip install -r requirements.txt
+fi
 
 # set prompt 
-# export CONTEXT="($GIT_NAME) "
-# export PS1="${CONTEXT} ${PS1}"
+export CONTEXT="($GIT_NAME) "
+export PS1="${CONTEXT} ${PS1}"
 
-# . venv/bin/activate
+. venv/bin/activate
+  

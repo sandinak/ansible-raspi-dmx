@@ -4,9 +4,9 @@
   become: yes
   vars:
     tty_device: ttyAMA0
- 
+    
   pre_tasks:
-
+      
   roles:
     - raspi/dmx_hat/configure
 

@@ -1,5 +1,9 @@
 tty_device: ttyAMA0
 
+
+ola_opc_port: 7890
+ola_opc_ip: 127.0.0.1
+
 ola_packages:
   - ola
   

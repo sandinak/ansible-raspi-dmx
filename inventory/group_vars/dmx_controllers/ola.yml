@@ -2,7 +2,7 @@ ola_plugins:
   artnet:
     config:
       - enabled = true
-      - always_broadcast = yes
+      - always_broadcast = no
       - long_name = {{inventory_hostname}} ArtNet
       - short_name = {{inventory_hostname}} ArtNet 
   uartdmx: 

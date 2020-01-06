@@ -1,0 +1,21 @@
+---
+
+- name: stop OLAd
+  service:
+    name: olad
+    state: stopped
+
+- name: flush OLAd config
+  become: yes
+  file:
+    path: '{{item}}'
+    state: absent
+  with_items:
+    - /etc/ola/ola-universe.conf
+    - /etc/ola/ola-port.conf
+
+- name: start OLAd
+  service:
+    name: olad
+    state: started
+  

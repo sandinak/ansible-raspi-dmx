@@ -3,4 +3,6 @@
 
 wifi:
   # used to define radio config
-  country_code: US
+  country_code: us
+  ssid: LIGHTS
+  password: brightLights

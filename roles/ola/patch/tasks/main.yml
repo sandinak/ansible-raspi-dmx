@@ -1,5 +1,51 @@
 ---
-- include_tasks: patch.yml
-  with_items: "{{patches}}"
-  loop_control:
-    loop_var: patch
+- name: '{{plugin}} - get plugin id'
+  shell: ola_plugin_info | grep -i "{{plugin}}" | awk '{print $1}'
+  register: _plugin_id
+  changed_when: false
+    
+- name: '{{plugin}} - get info on {{type}} plugin id {{_plugin_id.stdout}}'
+  shell: ola_dev_info -p {{_plugin_id.stdout}}
+  changed_when: false
+  register: _device_info
+
+- name: '{{plugin}} - get device, ola_port and universe ids'
+  set_fact:
+    _device_id:   '{{ _device_info.stdout_lines | 
+                      select("match", "Device") |
+                      first |
+                      regex_replace(".*Device ([0-9]+).*","\1") }}'
+
+- name: '{{plugin}} - set ola_port_regex {{ola_port}}, {{type|upper}}'
+  set_fact:
+    _ola_port_regex: "port {{ola_port}}, {{type|upper}}"
+
+- name: '{{plugin}} - get {{_device_id}} ola_port id ({{ola_port}}) and universe id'
+  set_fact:
+    _ola_port_id:     '{{ _device_info.stdout_lines | 
+                      select("search", _ola_port_regex) |
+                      first |
+                      regex_replace(".*port ([0-9]+).*","\1") }}'
+
+- name: '{{plugin}} - get {{_device_id}}:{{_ola_port_id}} universe id'
+  set_fact:
+    _universe_id: '{{ _device_info.stdout_lines | 
+                      select("search", _ola_port_regex) |
+                      first |
+                      regex_replace(".*universe ([0-9]+).*","\1") }}'
+
+- name: '{{plugin}} - patching {{type}} {{_device_id}}:{{_ola_port_id}} to {{universe}}'
+  shell: 
+    ola_patch 
+      {{input_flag}}
+      -d {{_device_id}} 
+      -p {{_ola_port_id}}
+      -u {{universe}}
+  notify: restart olad
+
+- name: '{{plugin}} - setting name to {{universe_name}}'
+  shell:
+    ola_uni_name 
+      -n "{{universe_name}}"
+      -u {{universe}}
+  when: universe_name is defined 
