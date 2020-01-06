@@ -1,6 +1,12 @@
 ---
 - name: restart ola
   become: yes
-  shell: service olad restart
-  args: 
-    warn: false
+  service: 
+    name: olad
+    enabled: true
+    state: restarted 
+    
+- name: kick systemd
+  become: true
+  shell: 
+    systemctl daemon-reload

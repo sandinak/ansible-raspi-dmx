@@ -1,19 +1,40 @@
-[steps]
-dsr1  mac_address=B8:27:EB:F3:AB:10 ansible_ssh_host=172.31.228.126
+[dmx_controllers]
+radio-1 ansible_ssh_host=172.18.1.100  oid=
 
-[fcservers:children] 
-steps
+[ds_steps]
+ds-1 ansible_ssh_host=172.18.1.201 mac_address=B8:27:EB:33:B9:2B oid=0
+ds-2 ansible_ssh_host=172.18.1.202 mac_address=B8:27:EB:F3:AB:10 oid=4
+ds-3 ansible_ssh_host=172.18.1.203 mac_address=B8:27:EB:39:15:DC oid=8
+ds-4 ansible_ssh_host=172.18.1.204 mac_address=B8:27:EB:23:3C:7B oid=12
 
-[dmx_controllers:children]
+[cs_steps]
+cs-1 ansible_ssh_host=172.18.1.211 mac_address=B8:27:EB:AE:EC:B9 oid=16
+cs-2 ansible_ssh_host=172.18.1.212 mac_address=B8:27:EB:A5:36:03 oid=20
+cs-3 ansible_ssh_host=172.18.1.213 mac_address=b8:27:eb:12:6c:7b oid=24
+cs-4 ansible_ssh_host=172.18.1.214 mac_address=B8:27:EB:F1:8A:25 oid=28
 
-[olad:children]
-fcservers
-dmx_controllers
+[us_steps]
+us-1 ansible_ssh_host=172.18.1.221 mac_address=b8:27:eb:23:3c:7b oid=32
+us-2 ansible_ssh_host=172.18.1.222 mac_address=B8:27:EB:F3:AB:10 oid=36
+us-3 ansible_ssh_host=172.18.1.223 mac_address=B8:27:EB:39:15:DC oid=40
+us-4 ansible_ssh_host=172.18.1.224 mac_address=b8:27:eb:65:6b:43 oid=44
+
+
+[steps:children]
+ds_steps
+cs_steps
+us_steps
+
+[spi_controllers]
+spi-1
 
 [raspi:children]
+dmx_controllers
 steps
+spi_controllers
 
 [raspi:vars]
 ansible_connection=ssh 
 ansible_ssh_user=pi 
 ansible_ssh_pass=raspberry
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

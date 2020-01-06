@@ -1,10 +1,21 @@
-- debug: var=plugins[plugin_name]['config']
 
-- name: configure {{plugin_name}}
-  lineinfile: 
-    path: /etc/ola/ola-{{plugin_name}}.conf
-    line: "{{item}}"
-    regexp: "^{{item.split('=')[0]}}.*"
-  with_items: "{{plugins[plugin_name]['config']}}"
-  notify: restart ola
+- name: check for template
+  block:
+    - name: configure with {{plugin_name}} template
+      template: 
+        src: ola-{{plugin_name}}.conf.j2
+        dest: /etc/ola/ola-{{plugin_name}}.conf
+      notify: restart ola
+
+  rescue:
+    - name: configure {{plugin_name}} with lininfile
+      lineinfile: 
+        state: present
+        path: /etc/ola/ola-{{plugin_name}}.conf
+        line: "{{item}}"
+        regexp: "^{{item.split('=')[0]}}.*=.*{{item.split('=')[1]}}$"
+      loop: "{{plugins[plugin_name]['config']}}"
+      loop_control:
+        label: "regexp: \"{{item.split('=')[0]}}.*=.*{{item.split('=')[1]}}\""
+      notify: restart ola
   

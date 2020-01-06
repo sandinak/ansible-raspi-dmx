@@ -9,6 +9,15 @@
     src: ola-server.conf.j2
     dest: /etc/ola/ola-server.conf
 
+- name: configure startup
+  copy: 
+    src: etc/systemd/system/olad.service
+    dest: /etc/systemd/system/olad.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: kick systemd
+  
 - name: configure_plugins
   include_tasks: plugin.yml
   with_items: "{{_ola_plugins}}"
