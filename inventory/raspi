@@ -25,13 +25,9 @@ ds_steps
 cs_steps
 us_steps
 
-[spi_controllers]
-spi-1
-
 [raspi:children]
 dmx_controllers
 steps
-spi_controllers
 
 [raspi:vars]
 ansible_connection=ssh 

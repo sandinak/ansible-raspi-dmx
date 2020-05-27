@@ -11,7 +11,7 @@
       register: _fc_repo
       failed_when: _fc_repo.stat.exists == False
   rescue:
-    - name: git clone {{fadecandy.git_repo}}
+    - name: "git clone {{fadecandy.git_repo}}"
       git:
         repo: "{{fadecandy.git_repo}}"
         dest: "{{fadecandy.working_dir}}"
