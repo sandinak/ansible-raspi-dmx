@@ -10,7 +10,7 @@ default:
 defs:
   - Manufacturer: PHS Chorus
     Model: Step Row
-    Type: LED Bar (Pixels)
+    Type: "LED Bar (Pixels)"
     Colors: RGB
     Heads: 64
     Physical:

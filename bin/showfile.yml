@@ -21,7 +21,7 @@ rgb_matrix:
     RunOrder: Loop
     Algorithm:
       Type: Script
-      Name: Plasma (Colors)
+      Name: "Plasma (Colors)"
     DimmerControl: 1
     MonoColor: 4294901760
     Property:
