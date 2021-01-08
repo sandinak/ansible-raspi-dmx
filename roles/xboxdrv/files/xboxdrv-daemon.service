@@ -1,0 +1,8 @@
+[Unit]
+Description=xboxdrv
+
+[Service]
+ExecStart=/usr/bin/xboxdrv --silent -D --dbus disabled --detach
+
+[Install]
+WantedBy=multi-user.target

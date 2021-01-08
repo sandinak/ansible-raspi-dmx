@@ -1,5 +1,5 @@
 ---
-- name: create /etc/ethers/{{item.key}}
+- name: create /etc/ethers/{{item}}
   raw:
-    echo "{{item.value.mac_address}} {{item.key}}" > /etc/ethers.d/{{item.key}}
+    echo "{{ hostvars[item].mac_address}} {{item}}" > /etc/ethers.d/{{item}}
   notify: update /etc/ethers

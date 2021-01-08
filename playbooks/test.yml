@@ -1,0 +1,6 @@
+- name: delegate_to test
+  hosts: steps
+  tasks:
+    - name: tesitng 
+      delegate_to: gw.doghouse
+      debug: var=delegate_to

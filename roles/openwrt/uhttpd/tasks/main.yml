@@ -1,0 +1,7 @@
+---
+#-- configure uhttpd
+- name: configure management webserver
+  uci: command=set  key="uhttpd.main.{{item.key}}" value="{{item.value}}"
+  with_dict: "{{uhttpd}}"
+  notify:
+    - uci commit

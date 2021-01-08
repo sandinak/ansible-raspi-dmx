@@ -1,5 +1,5 @@
 ---
-- name: create /etc/hosts.d/{{item.key}}
+- name: create /etc/hosts.d/{{item}}
   raw:
-    echo "{{item.value.ip_addr}} {{item.key}}" > /etc/hosts.d/{{item.key}}
+    echo "{{ hostvars[item].ansible_ssh_host}} {{item}}.{{domain}} {{item}}" > /etc/hosts.d/{{item}}
   notify: update /etc/hosts

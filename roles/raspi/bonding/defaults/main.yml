@@ -1,0 +1,10 @@
+---
+bonding_options: []
+
+bonding_bond0_interface_options: []
+
+net_mask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
+
+bonding_packages:
+  - ifenslave
+  - arping 

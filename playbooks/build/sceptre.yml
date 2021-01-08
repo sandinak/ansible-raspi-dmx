@@ -1,0 +1,44 @@
+---
+- name: Configure a raspi instance as a Step Controller
+  hosts: sceptres
+  tags: 
+    - sceptres
+  become: yes
+  roles:
+    # configure fadecandy
+    - role: fadecandy
+      tags: fcserver
+
+    # configure olad with plugins
+    - role: ola/olad/configure
+      tags: ola
+      plugins: "{{ola_plugins}}"
+
+- name: Patch step controller
+  hosts: sceptres
+  tags: 
+    - sceptres
+    - patch
+  become: yes
+  vars:
+    ola_universe_id: "{{oid}}"
+  roles:
+    - role: ola/clean_config
+
+    # patch ARTNet to uartDMX on configured universe
+    - role: ola/patch
+      tags: patch
+      plugin: artnet
+      type: in
+      ola_port: '0'
+      universe: "{{ola_universe_id}}"
+      universe_name: Step Row 1/2
+
+    - role: ola/patch
+      tags: patch
+      plugin: open pixel control
+      type: out
+      universe: "{{ola_universe_id}}"
+      ola_port: '0'
+
+   

@@ -1,0 +1,54 @@
+---
+    
+#-- configure network interfaces
+- name: add interfaces
+  when: network_interfaces is defined
+  uci: command=set key="network.{{item.index}}" value="interface"
+  with_items: "{{network_interfaces}}"
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - network
+    - wifi
+    - interfaces
+    - create_interfaces
+
+- name: configure interfaces
+  when: network_interfaces is defined
+  uci: command=set key="network.{{ item.0.index }}.{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements:
+    - "{{network_interfaces}}"
+    - settings
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - network
+    - wifi
+    - interfaces
+  
+#-- handle wireless
+- name: preconfigure wireless interfaces
+  when: wireless is defined
+  uci: command=add key="wireless" value=wifi-iface index="{{ item.index }}"
+  with_items: "{{ wireless }}"
+  notify:
+    - uci commit
+  tags:
+    - interfaces
+    - wifi
+
+- name: configure wireless interfaces
+  when: wireless is defined
+  uci: command=set key="wireless.@wifi-iface[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ wireless }}"
+    - settings
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - interfaces
+    - wifi
+

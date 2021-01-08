@@ -1,0 +1,38 @@
+---
+# build directory for openwrt
+# this should be *fast* disk
+build_dir: /Volumes/SSD
+
+profiles:
+  archer_c7: 
+    diffconfig: |
+      CONFIG_TARGET_ar71xx=y
+      CONFIG_TARGET_ar71xx_generic=y
+      CONFIG_TARGET_ar71xx_generic_ARCHERC7=y
+      # CONFIG_PACKAGE_kmod-ath10k is not set
+      CONFIG_PACKAGE_kmod-usb-ohci=y
+      CONFIG_PACKAGE_libiwinfo-lua=y
+      CONFIG_PACKAGE_liblua=y
+      CONFIG_PACKAGE_libmbedtls=y
+      CONFIG_PACKAGE_libpolarssl=y
+      CONFIG_PACKAGE_libubus-lua=y
+      CONFIG_PACKAGE_libuci-lua=y
+      CONFIG_PACKAGE_libustream-mbedtls=y
+      CONFIG_PACKAGE_lua=y
+      CONFIG_PACKAGE_luci=y
+      CONFIG_PACKAGE_luci-app-firewall=y
+      CONFIG_PACKAGE_luci-base=y
+      CONFIG_PACKAGE_luci-lib-ip=y
+      CONFIG_PACKAGE_luci-lib-jsonc=y
+      CONFIG_PACKAGE_luci-lib-nixio=y
+      CONFIG_PACKAGE_luci-mod-admin-full=y
+      CONFIG_PACKAGE_luci-proto-ipv6=y
+      CONFIG_PACKAGE_luci-proto-ppp=y
+      CONFIG_PACKAGE_luci-ssl=y
+      CONFIG_PACKAGE_luci-theme-bootstrap=y
+      CONFIG_PACKAGE_px5g=y
+      CONFIG_PACKAGE_rpcd=y
+      CONFIG_PACKAGE_rpcd-mod-rrdns=y
+      CONFIG_PACKAGE_uboot-ar71xx-nbg460n_550n_550nh=y
+      CONFIG_PACKAGE_uhttpd=y
+      CONFIG_PACKAGE_uhttpd-mod-ubus=y

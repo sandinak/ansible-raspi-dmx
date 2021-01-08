@@ -1,0 +1,15 @@
+---
+ansible_inventory: "{{lookup('env','ANSIBLE_INVENTORY')}}"
+
+# cute little snippet to gather the unique perm mac addresses from hosts
+hw_macaddresses: "{{ ansible_interfaces | 
+                     difference(['lo']) | 
+                     map('regex_replace', '^(.*)$', 'ansible_\\1' ) | 
+                     map('extract', hostvars[inventory_hostname], 'perm_macaddress') | 
+                     select('defined') |
+                     map('upper') |    
+                     list |
+                     unique |
+                     sort |
+                     join(',')
+                     }}"

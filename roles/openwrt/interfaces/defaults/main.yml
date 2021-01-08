@@ -1,0 +1,25 @@
+network_interfaces:
+  - index: lan
+    settings: 
+     - key: proto
+       value: static
+     - key: ipaddr
+       value: "{{ subnet | ipaddr(1) | ipaddr('address')}}"
+     - key: netmask
+       value: "{{ subnet | ipaddr('netmask') }}"
+     - key: type
+       value: bridge
+     - key: ip6assign
+       value: 60
+#  - index: "{{ wifi_interface }}"
+#    settings: 
+#     - key: proto
+#       value: static
+#     - key: ipaddr
+#       value: "{{ wifi_subnet | ipaddr(1) | ipaddr('address')}}"
+#     - key: netmask
+#       value: "{{ wifi_subnet | ipaddr('netmask') }}"
+#     - key: type
+#       value: bridge
+#     - key: ip6assign
+#       value: 60

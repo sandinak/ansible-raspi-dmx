@@ -4,8 +4,7 @@
     if [ ! -d /etc/ethers.d ]; then  \
       mkdir /etc/ethers.d; \
     fi
-    
-- debug: var=ethers
-    
+
+# this does not have to be in alpha order
 - include_tasks: entry.yml
-  with_dict: "{{ethers}}"
+  loop: "{{hostnames}}"

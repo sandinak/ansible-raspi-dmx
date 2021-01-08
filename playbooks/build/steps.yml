@@ -2,9 +2,22 @@
 - name: Configure a raspi instance as a Step Controller
   hosts: steps
   tags: 
-    - steps
+    - steps 
   become: yes
+  gather_facts: yes
   roles:
+
+    # configure bonding cause we have 2 NICs
+    - role: raspi/bonding
+      tags: bonding
+
+    # update the configured router with address space config
+    - role: raspi/router_addressing
+      tags:
+        - mac
+        - ethers
+      delegate_to: gw.doghouse
+
     # configure fadecandy
     - role: fadecandy
       tags: fcserver

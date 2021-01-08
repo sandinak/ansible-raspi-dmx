@@ -1,0 +1,108 @@
+
+#-- configure firewalls
+- name: create firewall rules
+  when: firewall_rules is defined
+  uci: command=add key="firewall" value=rule index="{{ item.index }}"
+  with_items: "{{ firewall_rules }}"
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - rules
+
+
+- name: configure firewall rules
+  when: firewall_rules is defined
+  uci: command=set key="firewall.@rule[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ firewall_rules }}"
+    - settings
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - rules
+    
+#-- configure firewall zones
+- name: create firewall zones
+  when: wireless is defined
+  uci: command=add key="firewall" value=zone index="{{ item.index }}"
+  with_items: "{{ firewall_zones }}"
+  when: firewall_zones is defined 
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - zones
+
+- name: configure firewall zones
+  when: firewall_rules is defined
+  uci: command=set key="firewall.@zone[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  when: firewall_zones is defined
+  with_subelements: 
+    - "{{ firewall_zones }}"
+    - settings
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - firewall
+    - zones
+
+#-- configure firewall forwarding
+- name: create forwarding rules
+  when: forwarding_rules is defined
+  uci: command=add key="firewall" value=forwarding index="{{ item.index }}"
+  with_items: "{{ forwarding_rules }}"
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - forwarding
+
+- name: configure forwarding rules
+  when: forwarding_rules is defined
+  uci: command=set key="firewall.@forwarding[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ forwarding_rules }}"
+    - settings
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - forwarding
+
+- debug: var=redirect_rules
+  tags:
+    - firewall
+    - redirect_rules
+
+#-- configure firewall redirect
+- name: create forwarding redirects
+  when: redirect_rules is defined
+  uci: command=add key="firewall" value=redirect index="{{ item.index }}"
+  with_items: "{{ redirect_rules }}"
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - redirect_rules
+
+- name: configure forwarding redirects
+  when: redirect_rules is defined
+  uci: command=set key="firewall.@redirect[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ redirect_rules }}"
+    - settings
+  notify:
+    - uci commit
+    - reload firewall
+  tags:
+    - firewall
+    - redirect_rules

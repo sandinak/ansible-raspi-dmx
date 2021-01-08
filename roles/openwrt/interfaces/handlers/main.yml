@@ -1,0 +1,36 @@
+---
+# handlers file for openwrt
+- name: clear dhcp files
+  raw: "rm /var/dhcp.leases /var/hosts/*dhcp*"
+  failed_when: false
+
+- name: uci commit
+  raw: uci commit
+  
+- name: restart logging
+  raw: /etc/init.d/log restart
+  
+- name: reload system
+  raw: /etc/init.d/system reload
+
+- name: reload network
+  raw: /etc/init.d/network relaod 
+  
+- name: reload firewall
+  raw: /etc/init.d/firewall reload
+  
+- name: reload dnsmasq
+  raw: /etc/init.d/dnsmasq reload
+
+- name: reload dropbear
+  raw: /etc/init.d/dropbear reload
+
+- name: clear dhcp leases
+  raw: rm /tmp/dhcp.leases
+  
+- name: reboot router
+  raw: /sbin/reboot
+  
+- name: reset switch
+  raw: swconfig dev switch0 set reset 1
+

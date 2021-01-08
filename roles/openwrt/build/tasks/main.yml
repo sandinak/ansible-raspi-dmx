@@ -1,0 +1,45 @@
+---
+
+- block: 
+  delegate_to: localhost
+  - name: checkout latest source
+    git: 
+      repo: https://github.com/openwrt/openwrt.git
+      dest: "{{build_dir}}"
+      force: yes
+      
+  - name: update tools if needed
+    shell: "{{item}}"
+    args:
+      chdir: "{{buid_dir}}/openwrt"
+    with_items:
+      - scripts/feeds update -a
+      - scripts/feeds install -a
+    
+  - name: write profile
+    template:
+      dest: "{{build_dir}}/openwrt/.config"
+      src: config.j2
+
+  - name: expand to full config
+    shell: make defconfig
+    args: 
+      chdir: "{{buid_dir}}/openwrt"
+      
+  - name: make files dir
+    file: "{{buid_dir}}/openwrt/{{item}}"
+    state: directory
+    items:
+      - files
+      - files/etc
+      - files/etc/authorized_keys
+      
+  - name: create key for ssh
+    template:
+      src: etc/dropbear/authorized_keys
+      dest: "{{build_dir}}/openwrt/files/etc/dropbear/authorized_keys"
+    
+    
+    
+      
+    

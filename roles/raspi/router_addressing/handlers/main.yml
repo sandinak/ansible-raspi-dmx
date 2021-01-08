@@ -1,0 +1,4 @@
+- name: reload dnsmasq
+  run_once: yes
+  raw:
+    /etc/init.d/dnsmasq restart 

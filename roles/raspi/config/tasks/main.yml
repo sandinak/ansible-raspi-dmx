@@ -53,5 +53,12 @@
     dest: /etc/hostname
     content: "{{inventory_hostname}}"
 
+- name: disable unneeded services
+  become: yes
+  service: 
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop: "{{disabled_services}}"
 
 ...

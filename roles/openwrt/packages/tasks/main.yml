@@ -1,0 +1,31 @@
+---
+
+#-- idempotent
+- name: check for packages
+  raw: ls /var/opkg-lists/*.sig
+  check_mode: no
+  changed_when: false
+  failed_when: false
+  register: opkg_lists_exists
+  tags: packages
+
+- name: clear package cache
+  raw: rm /var/opkg-lists/*
+  failed_when: false
+  when: opkg_lists_exists.rc==0 and flush_packages is defined
+  tags:
+    - packages
+
+- name: update package repo
+  raw: opkg update
+  tags:
+    - packages
+  when: opkg_lists_exists.rc==1 or flush_packages is defined
+
+- name: install packages
+  wrt_opkg:
+    command: install
+    package: "{{ item }}"
+  with_items: "{{ packages }}"
+  tags:
+    - packages

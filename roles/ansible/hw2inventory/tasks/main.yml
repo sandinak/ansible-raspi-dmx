@@ -1,0 +1,11 @@
+---
+- name: update {{ansible_inventory}}/show with hw addresses
+  lineinfile:
+    path: "{{ansible_inventory}}/show"
+    regexp: "{{inventory_hostname}}.*"
+    line: >
+      {{inventory_hostname}}
+      show_dmx_ip={{show_dmx_ip}}
+      oid={{oid}}
+      macaddresses={{hw_macaddresses}}
+  register: local_inventory

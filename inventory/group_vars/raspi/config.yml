@@ -4,4 +4,11 @@ raspi_default_password: raspberry
 
 global:
   config_txt:
-    - disable_splash = 1
+    - disable_splash=1
+    #- dtparam=audio=off
+
+disabled_services:
+  - avahi-daemon
+  - cron 
+
+

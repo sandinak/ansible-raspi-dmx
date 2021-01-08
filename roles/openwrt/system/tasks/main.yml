@@ -1,0 +1,19 @@
+---
+- name: set system parameters
+  uci: command=set key="system.@system[0].{{ item.key }}" value="{{ item.value }}"
+  with_dict: "{{ system }}"
+  notify: 
+    - uci commit
+    - reload system
+  tags:
+    - config
+
+- name: set ssh keys
+  wrt_authorized_key: "ssh_key={{ item }}"
+  with_items: "{{ ssh_keys }}"
+    
+- name: set root password if needed
+  wrt_passwd: user=root password="{{ router_password }}"
+  when: router_password is defined
+  register: passchg
+  

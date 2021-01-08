@@ -1,0 +1,32 @@
+---
+
+- name: check for packages
+  raw: ls /var/opkg-lists
+  check_mode: no
+  changed_when: false
+  failed_when: false
+  register: opkg_lists_exists
+  tags: packages
+
+- name: clear package cache
+  raw: rm /var/opkg-lists/*
+  failed_when: false
+  when: opkg_lists_exists is success and flush_packages is defined
+  tags:
+    - packages
+
+- name: update package repo
+  raw: opkg update
+  when: opkg_lists_exists is failed
+  tags:
+    - packages
+  
+- name: install packages
+  wrt_opkg:
+    command: install
+    package: "{{ item }}"
+  with_items: "{{ router_packages }}"
+  tags:
+    - packages
+  
+    

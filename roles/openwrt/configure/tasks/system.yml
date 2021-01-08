@@ -1,0 +1,45 @@
+---
+- debug: var=system
+
+- name: set system parameters
+  uci: command=set key="system.@system[0].{{ item.key }}" value="{{ item.value }}"
+  with_dict: "{{ system }}"
+  notify: 
+    - uci commit
+    - reboot router
+  tags:
+    - config
+
+- name: set ssh keys
+  wrt_authorized_key: "ssh_key={{ item }}"
+  with_items: "{{ ssh_keys }}"
+    
+- name: set root password if needed
+  wrt_passwd: user=root password="{{ router_password }}"
+  when: router_password is defined
+  register: passchg
+  
+#-- configure uhttpd
+- name: configure management webserver
+  uci: command=set  key="uhttpd.main.{{item.key}}" value="{{item.value}}"
+  with_dict: "{{uhttpd}}"
+  notify:
+    - uci commit
+    
+- name: copy hosts file over
+  local_action: shell scp {{ansible_ssh_common_args}} -F ssh/config inventory/files/{{class_name}}/class_router/etc/hosts root@{{address.wired.gw}}:/etc/hosts
+  tags: 
+    - hosts
+  notify:
+    - reload dnsmasq
+  when:
+    update_hosts is defined
+
+
+#-- need a way to do this 
+#- name: configure /etc/hosts
+#  wrt_hosts: 
+#    hosts="{{etc_hosts}}"
+#  when: etc_hosts is defined 
+#  tags:
+#    - hosts

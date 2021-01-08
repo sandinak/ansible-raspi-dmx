@@ -1,0 +1,15 @@
+---
+
+#-- system config
+system: 
+  hostname: "{{inventory_hostname}}"
+  timezone: "{{time_zone}}"
+  log_file: /tmp/system.log
+  # log_ip: "{{ loghost }}"
+  
+
+  
+#-- reconfigure management interface
+uhttpd:
+  listen_http: '0.0.0.0:8080'
+  listen_https: '0.0.0.0:8443'

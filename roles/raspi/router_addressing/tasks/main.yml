@@ -1,0 +1,13 @@
+---
+- name: create network block for this host
+  blockinfile: 
+    path: /etc/config/dhcp
+    state: present
+    marker: '# {mark} {{inventory_hostname}} entry'
+    block: |
+      config host
+             option name '{{inventory_hostname}}'
+             option mac '{{ ansible_wlan0.perm_macaddress | upper }},{{ ansible_eth0.perm_macaddress | upper }}'
+             option ip '{{show_dmx_ip}}'
+      
+  notify: reload dnsmasq

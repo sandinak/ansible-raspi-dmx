@@ -1,0 +1,13 @@
+---
+
+- include: system.yml
+- include: packages.yml
+  when: router_packages is defined
+- include: firewall.yml
+- include: dnsmasq.yml
+#- include: dropbear.yml
+
+
+    
+
+

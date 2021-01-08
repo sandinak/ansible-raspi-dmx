@@ -1,0 +1,34 @@
+---
+- name: construct data set
+  set_fact: 
+    dhcp_interfaces: | 
+      {% set res = [] -%}
+      {% set i = 0 %}
+      {% for iface in sorted(interfaces.keys()) %}
+        
+
+      "{{dhcp_interfaces|default([]) +
+      '{{targs|default([])}} +
+        [ 
+          { "index": {{item.0}},
+            "settings": {
+              "name": "{{item.1.name}}",
+              "ip": "{{item.1.ip}}",
+              "mac": "{{hw_addr[item.1.name]}}"
+             }
+           }
+        ]'
+  with_indexed_items: "{{interfaces}}"
+
+#-- configure interfaces
+- name: configure DHCP on interfaces
+  when: dhcp_interfaces is defined
+  uci: command=set key="dhcp" value=lan index="{{ item.index }}"
+  with_items: "{{ dhcp_interfaces }}"
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - dnsmasq
+    - dhcp
+    - interfaces

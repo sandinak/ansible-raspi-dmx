@@ -1,0 +1,25 @@
+---
+# interval used to test for interface up
+bonding_arp_interval: 1000
+
+# NOTE: these are named differently ( WHY?!?! ) So handle uniquely.
+# config options used
+bonding_options:
+  - mode=1
+  - fail_over_mac=active
+  - miimon=0
+  - primary=eth0 
+  - primary_reselect=always
+  - arp_interval=1000
+  - "arp_ip_target={{ansible_default_ipv4.gateway}}"
+
+# interface options .. should match above.
+bonding_bond0_interface_options:
+  - "bond-mode              active-backup"
+  - "bond-primary           eth0"
+  - "bond-primary_reselect  always"
+  - "bond-miimon            0"
+  - "bond-fail_over_mac     active"
+  - "bond-arp_interval      {{bonding_arp_interval}}"
+  - "bond-arp_ip_target     {{ansible_default_ipv4.gateway}}"
+ 

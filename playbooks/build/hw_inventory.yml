@@ -1,0 +1,15 @@
+---
+# Tool for reading mac addresses from raspi and writing to local inventory 
+# Inventory is most significant
+- name: map existing hardware into inventory
+  hosts: raspi
+  gather_facts: yes
+  roles:
+    # update the configured router with address space config
+    - role: ansible/hw2inventory
+      delegate_to: localhost
+
+    - meta: reload_inventory
+
+- import_playbook: addressing.yml
+...

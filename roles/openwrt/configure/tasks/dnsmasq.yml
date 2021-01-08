@@ -1,0 +1,103 @@
+---
+
+- debug: var=dnsmasq
+  tags:
+    - dnsmasq
+    - dhcp
+    - interfaces
+    
+- name: create DHCP interfaces
+  when: dhcp_interfaces is defined
+  uci: command=set key="dhcp.{{ item.index }}" value="dhcp"
+  with_items: 
+    - "{{ dhcp_interfaces }}"
+  loop_control:
+    label: "{{item.index}}"
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - dnsmasq
+    - dhcp
+    - interfaces
+
+- name: configure DHCP interface settings
+  when: dhcp_interfaces is defined
+  uci: command=set key="dhcp.{{ item.0.index }}.{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ dhcp_interfaces }}"
+    - settings
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - dnsmasq
+    - dhcp
+    - interfaces
+
+- name: configure DHCP options per interface
+  when: dhcp_interfaces is defined 
+  uci: command=add_list key="dhcp.{{ item.0.index }}.options" value="{{ item.1 }}"
+  with_subelements: 
+    - "{{ dhcp_interfaces }}"
+    - options
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - dnsmasq
+    - dhcp
+
+#-- handle DHCP entries  
+- name: Configure dhcp hosts
+  when: dhcp_clients is defined
+  uci: command=add key="dhcp" value=host index="{{ item.index }}"
+  with_items: "{{ dhcp_clients }}"
+  notify:
+    - clear dhcp files
+    - uci commit
+    - reload dnsmasq
+    # - reset switch -- this doth not work .. clients don't pull
+    - reboot router
+  tags:
+    - dnsmasq
+    - dhcp
+    - hosts
+
+- name: configure DHCP host config
+  when: dhcp_clients is defined
+  uci: command=set key="dhcp.@host[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ dhcp_clients }}"
+    - settings
+  notify:
+    - uci commit
+    - reload dnsmasq
+  tags:
+    - dnsmasq
+    - dhcp
+    - hosts
+
+#-- setup dnsmasqe
+- name: preconfigure dnsmasq settings
+  when: dnsmasq is defined
+  uci: command=add key="dnsmasq" value=dnsmasq index="{{ item.index }}"
+  with_items: "{{ dnsmasq }}"
+  notify:
+    - uci commit
+    - reload dnsmasq
+  tags:
+    - dnsmasq
+
+- name: configure dnsmasq settings
+  when: dnsmasq is defined
+  uci: command=set key="dhcp.@dnsmasq[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ dnsmasq }}"
+    - settings
+  notify:
+    - uci commit
+    - reload dnsmasq
+  tags:
+    - dnsmasq
+

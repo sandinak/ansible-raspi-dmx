@@ -1,0 +1,22 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet manual
+        bond-master     bond0
+        bond-mode       active-backup
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet manual
+        wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+        bond-master     bond0
+        bond-mode       active-backup
+
+auto bond0
+iface bond0 inet manual
+iface bond0 inet dhcp
+{% for option in bonding_bond0_interface_options %}
+        {{option}}
+{% endfor %}

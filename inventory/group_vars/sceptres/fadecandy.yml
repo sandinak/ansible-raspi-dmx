@@ -1,0 +1,35 @@
+
+fcserver_config: 
+  listen: 
+    # listen on all ports
+    # note the second argument MUST be an int
+    - null
+    - 7890
+
+  # logging .. enable
+  verbose: true
+
+  color:
+    # color edits
+    gamma: 2.5
+    whitepoint: [ 0.7, 0.7, 0.7 ]
+
+  devices:
+    # devices, no defined serial.. will use the first
+    #   type: fadecandy/apa102spi
+    #   serial: (null)/serialnumber if we need to define
+    #   led: true/false/(null) null=under control
+    #   dither: (true)/false 
+    #   interpolate: (true)/false
+    - type: fadecandy
+      map:
+        # [ OPC Channel, First OPC Pixel, 
+        #   First output pixel, Pixel count ]
+        # config here is:
+        # - each pixel is 3 DMX channels (rgb) 
+        # - each OPC channel/universe is 2 strips, 128 px or 384 DMX addr
+        # - each OPC channel/universe starts at px 0 and goes 2 rows or 128px
+        # - each FC channel/strip is 64 px or 192 DMX addresses
+        # - each FC channel px starts at: (( FC-Channel+1 ) * 64 px)
+        # - each FC can address 8 * 64 px = 512 px
+        - [ 0,  0,  0,   128 ]

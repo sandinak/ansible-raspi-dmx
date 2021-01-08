@@ -1,0 +1,11 @@
+---
+- name: setup routers
+  hosts: routers
+  gather_facts: false
+  roles:
+    - role: openwrt/ethers
+      hostnames: "{{ groups['steps'] }}"
+    - role: openwrt/hosts
+      hostnames: "{{groups['steps'] }}"
+
+      

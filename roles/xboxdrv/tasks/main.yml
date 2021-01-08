@@ -1,0 +1,7 @@
+---
+- name: install xboxdrv
+  become: yes
+  apt: 
+    name: xboxdrv
+
+- name: configure to start at boot

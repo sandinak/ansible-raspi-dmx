@@ -1,0 +1,24 @@
+#-- configure dropbear
+- name: create dropbear rules
+  when: dropbear is defined
+  uci: command=add key="dropbear" value=dropbear index="{{ item.index }}"
+  with_items: "{{ dropbear }}"
+  notify:
+    - uci commit
+    - reload dropbear
+  tags:
+    - dropbear
+    - config
+
+- name: configure dropbear instances 
+  when: dropbear is defined
+  uci: command=set key="dropbear.@rule[{{ item.0.index }}].{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements: 
+    - "{{ dropbear }}"
+    - settings
+  notify:
+    - uci commit
+    - reload dropbear
+  tags:
+    - dropbear
+    - config

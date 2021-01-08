@@ -1,0 +1,52 @@
+---
+#-- handle vlans
+- name: configure vlans interfaces on switch
+  uci: command=add key="network" value=switch_vlan index="{{ item.index|string }}"
+  with_items: "{{switch_vlans}}"
+  notify:
+    - uci commit
+    - reload network
+  tags: 
+    - network
+    - switch
+
+- name: configure vlans on each interfaces
+  uci: command=set key="network.@switch_vlan[{{ item.0.index|string }}].{{ item.1.key|string }}" value="{{ item.1.value|string }}"
+  with_subelements:
+    - "{{switch_vlans}}"
+    - settings
+  notify:
+    - uci commit
+    - reload network
+  tags: 
+    - network
+    - switch
+
+- name: create interfaces
+  when: network_interfaces is defined
+  uci: command=set key="network.{{item.index}}" value="interface"
+  with_items:
+    - "{{network_interfaces}}"
+  loop_control:
+    label: "creating interface network.{{item.index}}"
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - network
+    - interfaces
+
+- name: configure interfaces
+  when: network_interfaces is defined
+  uci: command=set key="network.{{ item.0.index }}.{{ item.1.key }}" value="{{ item.1.value }}"
+  with_subelements:
+    - "{{network_interfaces}}"
+    - settings
+  loop_control:
+    label: "configuring network.{{item.0.index}}.{{item.1.key}} => {{item.1.value}}"
+  notify:
+    - uci commit
+    - reload network
+  tags:
+    - network
+    - interfaces
