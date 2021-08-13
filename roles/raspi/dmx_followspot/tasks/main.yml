@@ -1,0 +1,50 @@
+---
+- name: install packages
+  become: yes
+  apt:
+    name: "{{dmx_fs_packages}}"
+    state: present
+
+- name: blacklist xpad
+  tags: modules
+  become: yes
+  lineinfile: 
+    path: /etc/modules.d/blacklist
+    create: yes
+    owner: root
+    group: root
+    mode: 0744
+    regexp: "$blacklist xpad$"
+    line: "blacklist xpad"
+  register: xpad_blacklist
+
+- name: remove xpad 
+  tags: modules
+  become: yes
+  shell: lsmod | grep -q xpad  && rmmod xpad 
+  when: xpad_blacklist.changed
+
+- name: make git directory
+  file:
+    path: /home/pi/git
+    state: directory
+    owner: pi
+    group: pi
+
+- name: checkout git repo
+  git:
+    clone: yes
+    dest: /home/pi/git/dmx-followspot
+    repo: https://github.com/sandinak/dmx-followspot 
+
+- name: build environmnet if needed
+  shell: ls venv || make
+  args:
+    chdir: /home/pi/git/dmx-followspot
+
+
+
+
+
+
+  

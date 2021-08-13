@@ -1,0 +1,7 @@
+---
+ - name: enable ssh on {{sd_mountpoint}}
+   become: yes
+   file:
+     state: touch
+     path: "{{sd_mountpoint}}/ssh"
+...

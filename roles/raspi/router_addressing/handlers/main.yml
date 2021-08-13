@@ -1,4 +1,10 @@
 - name: reload dnsmasq
+  delegate_to: "{{groups['routers'][0]}}"
   run_once: yes
   raw:
     /etc/init.d/dnsmasq restart 
+
+- name: uci commit
+  delegate_to: "{{groups['routers'][0]}}"
+  raw: uci commit
+  notify: reload dnsmasq

@@ -1,0 +1,13 @@
+---
+- name: mac 
+  when: ansible_distribution == 'MacOSX'
+  tags: final
+  block: 
+    - name: final unmount disk {{disk_device_name}}
+      become: yes
+      shell: diskutil unmountDisk force {{disk_device_name}}
+    
+    - name: say finished
+      say: 
+        msg: burn on {{disk_device_name}} complete.
+...

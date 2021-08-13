@@ -1,0 +1,26 @@
+---
+# connectivity 
+ansible_connection: ssh
+ansible_ssh_user: pi
+ansible_ssh_common_args: -o StrictHostKeyChecking=no
+
+# this is the publshed default
+raspi_default_password: raspberry
+
+global:
+  config_txt:
+    - disable_splash=1
+    #- dtparam=audio=off
+
+disabled_services:
+  - avahi-daemon
+  - cron 
+
+raspi_packages:
+  - usbutils
+  - git
+  - zsh
+  - lsof
+  - tcpdump
+  - nmap
+  - python-pip

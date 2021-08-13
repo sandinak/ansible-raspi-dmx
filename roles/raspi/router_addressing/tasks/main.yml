@@ -1,13 +1,38 @@
 ---
-- name: create network block for this host
-  blockinfile: 
-    path: /etc/config/dhcp
-    state: present
-    marker: '# {mark} {{inventory_hostname}} entry'
-    block: |
-      config host
-             option name '{{inventory_hostname}}'
-             option mac '{{ ansible_wlan0.perm_macaddress | upper }},{{ ansible_eth0.perm_macaddress | upper }}'
-             option ip '{{show_dmx_ip}}'
-      
-  notify: reload dnsmasq
+- name: get current ip
+  delegate_to: localhost
+  set_fact:
+    _current_ip: "{{lookup('dig',inventory_hostname) }}"
+
+- name: set router {{inventory_hostname}} static lease to {{ipaddress}}
+  delegate_to: "{{groups['routers'][0]}}"
+  openwrt_uci: 
+    command: section
+    config: dhcp
+    type: host
+    find_by: 
+      name: "{{ inventory_hostname }}"
+    value: 
+      name: "{{ inventory_hostname }}"
+      mac: "{{ macaddresses }}"
+      ip: "{{ ipaddress }}"
+  when: 
+    - macaddresses is defined
+    - ipaddress is defined
+  notify: uci commit
+  register: _ip_updated
+
+- name: restart old ip address {{_current_ip}}
+  become: yes
+  shell: reboot
+  failed_when: false
+
+- name: wait for new ip {{ ipaddress }}
+  wait_for:
+    host: "{{ ipaddress }}"
+    delay: 10
+
+
+
+
+...

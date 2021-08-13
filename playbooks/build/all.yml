@@ -1,11 +1,14 @@
 ---
-- import_playbook: router.yml
+# - import_playbook: router.yml
 
 # configure all raspis
 - import_playbook: raspi.yml
 
 # configure steps 
 - import_playbook: steps.yml
+
+# followspot
+- import_playbook: dmx_followspot.yml
 
 #- import playbook: radio.yml
 # - import_playbook: dmx_controllers.yml

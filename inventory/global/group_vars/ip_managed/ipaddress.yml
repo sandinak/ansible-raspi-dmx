@@ -1,0 +1,3 @@
+---
+host_id: "{{inventory_hostname.split('-')[1] | int }}"
+ipaddress: "{{ network | ipaddr(host_id) | ipaddr('address') }}"

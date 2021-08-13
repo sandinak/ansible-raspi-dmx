@@ -1,46 +1,106 @@
 #! /bin/sh
 
-export GIT_NAME=$(basename $PWD)
-echo "Setting env for ansible in $GIT_NAME:"
+function verbose {
+  if [ -n "${echo_verbose}" ]; then
+    echo $*
+  fi
+}
 
-#aliases
-alias ap=ansible-playbook
-alias av=ansible-vault
-alias avv='ansible-vault view'
-alias ave='ansible-vault edit'
+function inventory {
 
-export ANSIBLE_HOME=${PWD}
-export ANSIBLE_INVENTORY=${PWD}/inventory
-export ANSIBLE_RETRY_FILES_SAVE_PATH=/tmp/${GIT_NAME}
+  verbose "Setup env for inventory using arguments: $1 $2"
 
-# check pass setup
-if ! eval pass > /dev/null; then
-  echo "install pass(1) on this host and initialize a vault ( pass init {{gpg_key_id}} )"
-  return 1
-elif ! pass ansible/$GIT_NAME/ansible_vault_password > /dev/null; then
-  echo "  - creating vault password for $(basename $0):"
-  pass insert ansible/$GIT_NAME/ansible_vault_password
+  export ANSIBLE_HOME=${PWD}
+  verbose "  - Using ansible instance ${ANSIBLE_HOME}"
+
+  export GIT_NAME=$(basename $PWD)
+
+  #aliases
+  alias ap=ansible-playbook
+  alias ai=ansible-inventory
+  alias av=ansible-vault
+  alias avv='ansible-vault view'
+  alias ave='ansible-vault edit'
+
+  # Prepend the path with ./bin if it's not there
+  if ! $( echo ${PATH} | grep -q "${ANSIBLE_HOME}/bin" ) ; then
+    export PATH="${ANSIBLE_HOME}/bin:${PATH}"
+  fi
+
+  # find inventory
+  unset -v ANSIBLE_INVENTORY
+  if [ -d ${ANSIBLE_HOME}/inventory/$1 ]; then
+    # Need to define the environment as they all share the same zone names
+    if [ ! -z "$1" ]; then
+      export INV=$1
+    else
+      echo "Required argements: inventory <environment>"
+      return 1
+    fi
+
+    # Export ansible inventory
+    export ANSIBLE_INVENTORY=${ANSIBLE_HOME}/inventory/${INV}
+    verbose "  - Using ansible inventory: ${ANSIBLE_INVENTORY}"
+
+    # Prepend global inventory if it exists
+    if [ -d "${ANSIBLE_HOME}/inventory/global" ]; then
+      verbose "  - Prepending global inventory: ${ANSIBLE_HOME}/inventory/global"
+      export ANSIBLE_INVENTORY="${ANSIBLE_HOME}/inventory/global,${ANSIBLE_INVENTORY}"
+    fi
+
+	# virtualenv
+	# check for venv .. if not there.. look to see if we can make it
+	if [ ! -d venv -a -f Makefile ]; then
+		echo "  - no venv .. found Makefile, running make"
+		make
+	elif [ ! -d venv -a -f requirements.txt ]; then
+		echo "  - no venv .. found requirements attempting to create":
+		virtualenv venv
+		pip install --no-cache-dir -r requirements.txt
+	fi
+
+	. venv/bin/activate 
+
+	# check pass setup
+	if ! eval pass > /dev/null; then
+	  echo "install pass(1) on this host and initialize a vault ( pass init {{gpg_key_id}} )"
+	  return 1
+	elif ! pass ansible/$GIT_NAME/ansible_vault_password > /dev/null; then
+	  echo "  - creating vault password for $(basename $0):"
+	  pass insert ansible/$GIT_NAME/ansible_vault_password
+	fi
+
+	# setup to use pass(1) with vault passwords
+	export ANSIBLE_VAULT_PASSWORD_FILE=${PWD}/bin/ansible_vault_password
+
+	# setup VENV crap
+	export PYCURL_SSL_LIBRARY=openssl
+  else
+  	echo "Unable to find inventory env for $1"
+	  return 1
+  fi
+}
+
+# if passed a variable .. attempt to set environment
+while test $# -gt 0; do
+  case "$1" in
+    -v|--verbose)
+      export echo_verbose=1
+      shift
+      ;;
+    *)
+      if [ -n "$2" ]; then 
+        export inv=$2
+        echo "looking for ${inv} for inventory."
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [ -n "${inv}" ]; then
+  inventory ${inv}
+else 
+  echo "using home for inventory."
+  inventory 'home'
 fi
-
-# setup to use pass(1) with vault passwords
-export ANSIBLE_VAULT_PASSWORD_FILE=${PWD}/bin/ansible_vault_password
-
-# setup VENV crap
-export PYCURL_SSL_LIBRARY=openssl
-
-# check for venv .. if not there.. look to see if we can make it
-if [ ! -d venv -a -f Makefile ]; then
-	echo "  - no venv .. found Makefile, running make"
-	make
-elif [ ! -d venv -a -f requirements.txt ]; then
-	echo "  - no venv .. found requirements attempting to create":
-	virtualenv venv
-	pip install --no-cache-dir -r requirements.txt
-fi
-
-# set prompt 
-export CONTEXT="($GIT_NAME)"
-export PS1="($GIT_NAME)${PS1}"
-
-. venv/bin/activate
-  

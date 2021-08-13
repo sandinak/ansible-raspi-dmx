@@ -5,11 +5,10 @@
     - sceptres
   become: yes
   roles:
-    # configure fadecandy
-    - role: fadecandy
-      tags: fcserver
-
     # configure olad with plugins
+    - role: pxdriver
+      tags: pxdriver
+
     - role: ola/olad/configure
       tags: ola
       plugins: "{{ola_plugins}}"
@@ -25,20 +24,14 @@
   roles:
     - role: ola/clean_config
 
-    # patch ARTNet to uartDMX on configured universe
+    # patch ARTNet to receive on U0
+    # NOTE: no output needed with pxdrvier.py
     - role: ola/patch
       tags: patch
       plugin: artnet
       type: in
       ola_port: '0'
       universe: "{{ola_universe_id}}"
-      universe_name: Step Row 1/2
-
-    - role: ola/patch
-      tags: patch
-      plugin: open pixel control
-      type: out
-      universe: "{{ola_universe_id}}"
-      ola_port: '0'
+      universe_name: Sceptre Lighting
 
    

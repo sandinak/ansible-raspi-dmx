@@ -1,0 +1,27 @@
+---
+# network config for groups of fixtures
+# we're breaking things into blocks of 32 addresses
+
+openwrt:
+  children: 
+    routers:
+
+# all routers, switches, etc will be in the first block
+net_infra:
+  vars:
+    network: "{{env_network | ipsubnet(27,0) }}"
+
+# artnet nodes are in the second block
+artnet_nodes:
+  vars:
+    network: "{{env_network | ipsubnet(27,1) }}"
+
+# PROPS start at third block
+steps:
+  vars:
+    network: "{{env_network | ipsubnet(27,2) }}"
+
+sceptres:
+  vars:
+    network: "{{env_network | ipsubnet(27,3) }}"
+

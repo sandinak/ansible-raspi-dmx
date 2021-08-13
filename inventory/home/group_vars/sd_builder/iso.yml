@@ -1,0 +1,4 @@
+---
+# set the path to the ISO File to use
+iso_path: "{{ lookup('env','HOME') }}/Documents/Images/2021-01-11-raspios-buster-armhf-lite.img"
+...

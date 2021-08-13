@@ -1,13 +1,17 @@
 ---
-- name: '{{plugin}} - get plugin id'
+
+- name: '{{plugin}} - get plugin id b'
+  when: plugin is defined
   shell: ola_plugin_info | grep -i "{{plugin}}" | awk '{print $1}'
   register: _plugin_id
   changed_when: false
+  failed_when: _plugin_id.stdout | length == 0
     
 - name: '{{plugin}} - get info on {{type}} plugin id {{_plugin_id.stdout}}'
   shell: ola_dev_info -p {{_plugin_id.stdout}}
   changed_when: false
   register: _device_info
+  failed_when: _device_info.stdout | length == 0
 
 - name: '{{plugin}} - get device, ola_port and universe ids'
   set_fact:

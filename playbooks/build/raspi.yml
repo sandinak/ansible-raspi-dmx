@@ -3,14 +3,16 @@
   gather_facts: no
   pre_tasks:
     - block: 
-        - name: test ssh for key setup
+        - name: test ssh to {{ansible_ssh_user}}@{{ansible_ssh_host|default(inventory_hostname)}}
           delegate_to: localhost
           changed_when: false
           check_mode: no
           shell: ssh 
             -o StrictHostKeyChecking=no
-            -o PasswordAuthentication=no
-            {{ansible_user}}@{{ansible_ssh_host}} 
+            -o BatchMode=yes
+            -l {{ansible_ssh_user}}
+            {{ansible_ssh_host|default(inventory_hostname)}} 
+            true
 
       rescue: 
         - name: set password to default and try again
@@ -33,12 +35,23 @@
         name: pi
         password: "{{ default_password_encrypted }}"
 
+    - name: set hostname
+      become: yes
+      hostname: 
+        name: "{{inventory_hostname}}"
+
+
 - name: configure raspis
   hosts: raspi
   gather_facts: yes
   roles:
     - zsh
     - fortune
-    - raspi/config
+    - raspi/config/base
+    - raspi/config/wifi
+    - role: raspi/config/bonding
+      when:
+        - macaddresses is defined
+        -  "',' in macaddresses"
     - raspi/iw_config
    

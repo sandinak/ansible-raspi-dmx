@@ -1,0 +1,53 @@
+---
+# home equipment, not published
+home:
+  vars:
+    env_network: 172.19.0.0/24
+    wifi_ssid: LTEST 
+  hosts: 
+    gw.lan:
+      ansible_ssh_host: 192.168.1.1
+  children: 
+    sd_builder:
+    devel:
+
+devel:
+  vars:
+    network: "{{env_network | ipsubnet(27,2) }}"
+  hosts: 
+    raspi-4:
+      macaddresses: dc:a6:32:5f:fa:77,dc:a6:32:5f:fa:76
+      ipaddress: "{{network|ipaddr(0)|ipaddr('address')}}"
+    raspi-3:
+      macaddresses: b8:27:eb:c2:ff:f6,b8:27:eb:97:aa:a3
+      ipaddress: "{{network|ipaddr(1)|ipaddr('address')}}"
+    raspi-w:
+      macad1resses: B8:27:EB:3A:90:08
+      ipaddress: "{{network|ipaddr(2)|ipaddr('address')}}"
+
+dmx_followspot: 
+  hosts:
+    raspi-3:
+
+routers:
+  hosts:
+    gw.lan: 
+
+ip_managed:
+  children:
+    devel:
+
+steps:
+  hosts:
+    raspi-3:
+
+sceptres:
+  hosts:
+    raspi-4:
+    raspi-w:
+
+raspi:
+  children: 
+    devel:
+
+    

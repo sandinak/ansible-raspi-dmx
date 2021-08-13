@@ -1,0 +1,16 @@
+---
+- name: install program 
+  copy:
+    src: pxdriver.py
+    dest: /home/pi/pxdriver.py
+    mode: 0755
+    owner: root
+    group: root
+
+- name: set startup at boot using rc.local
+  lineinfile:
+    path: /etc/rc.local
+    before: exit 0
+    line: ( nohup /home/pi/pxtest.py -u {{ola_universe_id}} -p {{led_count}} & ) 
+  
+- name: start the 
