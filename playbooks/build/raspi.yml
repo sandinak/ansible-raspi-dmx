@@ -36,6 +36,12 @@
 - name: configure raspis
   hosts: raspi
   gather_facts: yes
+  pre_tasks:
+    - name: update cache with update
+      become: yes 
+      shell: apt-get update --allow-releaseinfo-change
+      args:
+        warn: no
   roles:
     - zsh
     - fortune

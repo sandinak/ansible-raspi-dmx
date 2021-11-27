@@ -1,0 +1,13 @@
+---
+- name: force config of interface
+  become: yes
+  blockinfile:
+    state: present
+    path: /etc/dhcpcd.conf
+    block:
+      interface eth0 
+      static ip_address={{ show_dmx_ip }}/24
+      static_routers=172.18.1.1
+      static domain_name_servers=172.18.1.1
+  notify: restart
+      

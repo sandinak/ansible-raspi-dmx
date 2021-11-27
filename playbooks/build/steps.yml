@@ -3,16 +3,15 @@
   hosts: steps
   tags: 
     - steps 
-  become: yes
   gather_facts: yes
   roles:
-
     # configure bonding cause we have 2 NICs
-    - role: raspi/bonding
-      tags: bonding
+    - raspi/bonding
 
     # update the configured router with address space config
     - role: raspi/router_addressing
+      vars:
+        ansible_ssh_user: "{{lookup('env','USER')}}"
       tags:
         - mac
         - ethers
@@ -26,6 +25,8 @@
     - role: ola/olad/configure
       tags: ola
       plugins: "{{ola_plugins}}"
+
+- import_playbook: addressing.yml
 
 - name: Patch step controller
   hosts: steps

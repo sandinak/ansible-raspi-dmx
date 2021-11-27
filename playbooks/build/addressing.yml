@@ -2,6 +2,9 @@
   hosts: steps
   become: yes
   gather_facts: yes
+  tags: 
+    - addressing
+    - router
   roles:
     # update the configured router with address space config
     - role: raspi/router_addressing
