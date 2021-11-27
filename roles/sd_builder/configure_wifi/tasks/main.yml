@@ -1,0 +1,6 @@
+---
+- name: write config to {{sd_mountpoint}}/wpa_supplicant.conf
+  template:
+    src: boot/wpa_supplicant.conf.j2
+    dest: "{{sd_mountpoint}}/wpa_supplicant.conf"
+    mode: 0666

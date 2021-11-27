@@ -1,0 +1,7 @@
+---
+sd_builder:
+  vars:
+    ansible_connection: local
+  hosts:
+    localhost:
+...

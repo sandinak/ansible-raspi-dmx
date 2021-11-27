@@ -1,0 +1,10 @@
+---
+- git: git@github.com:gekmihesg/ansible-openwrt.git
+  version: master
+  dst: roles/gekmihesg.openwrt/
+#  files:
+#    - src: library/*
+#      dst: library/
+#    - src: vars_plugins/*
+#      dst: plugins/vars_plugins/
+

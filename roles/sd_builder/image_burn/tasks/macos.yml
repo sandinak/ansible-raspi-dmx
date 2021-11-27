@@ -1,0 +1,76 @@
+---
+- name: check for mounted drive with FAT_32
+  check_mode: no
+  tags: always
+  shell: 
+    diskutil list |
+    grep -B 4 FAT_32 |
+    grep \/dev\/ |
+    awk '{ print $1 }'
+  register: _diskutil_list
+  changed_when: false
+  failed_when: _diskutil_list.stdout_lines | length == 0 or 
+                _diskutil_list.stdout_lines | length > 1
+
+- name: extract disk name from {{ _diskutil_list }}
+  check_mode: no
+  tags: always
+  set_fact:
+    disk_device_name: "{{ _diskutil_list.stdout.split('/')[-1] }}"
+
+- name: check for mount
+  tags: 
+    - unmount
+    - burn
+  block:
+    - name: check for mount
+      shell: mount | grep -q {{disk_device_name}}
+      args:
+        warn: false
+      register: _mount_grep
+      failed_when: _mount_grep.rc == 0 
+  rescue:
+    - name: force unmount disk {{disk_device_name}}
+      become: yes
+      shell: diskutil unmountDisk force {{disk_device_name}}
+      args:
+        warn: false
+
+- name: burn image {{iso_path}} -> /dev/r{{disk_device_name}}
+  tags: burn
+  become: yes
+  shell: dd 
+    if={{iso_path}} 
+    of=/dev/r{{disk_device_name}}
+    bs=512k
+  args:
+    warn: false
+
+- name: wait for mount
+  block: 
+    - name: checking for mount of {{disk_device_name }}
+      shell: mount | grep {{disk_device_name}}
+      args:
+        warn: false
+      register: _mount_grep 
+      until: _mount_grep.rc == 0 
+      retries: 10
+      delay: 1
+  rescue:
+    - name: attempting to force mount of {{disk_device_name}}
+      shell: diskutil mountDisk {{disk_device_name}}
+
+- name: find mountpoint
+  shell: 
+    mount | 
+    grep {{disk_device_name}} | 
+    awk -F'on' '{ print $2 }' |
+    sed 's/\ [()].*//' | 
+    tr -d ' '
+  args:
+    warn: false
+  register: _mountpoint
+
+- name: setting sd_mountpoint to {{_mountpoint.stdout}}
+  set_fact:
+    sd_mountpoint: "{{_mountpoint.stdout}}"

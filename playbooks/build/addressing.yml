@@ -6,6 +6,7 @@
     - addressing
     - router
   roles:
+
     # update the configured router with address space config
     - role: raspi/router_addressing
       delegate_to: gw.doghouse

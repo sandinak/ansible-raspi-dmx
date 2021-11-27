@@ -14,3 +14,4 @@ pycparser
 PyNaCl
 PyYAML
 six
+python-gilt

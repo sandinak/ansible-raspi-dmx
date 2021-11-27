@@ -1,6 +1,0 @@
----
-- name: write config 
-  template:
-    src: boot/wpa_supplicant.conf.j2
-    dest: /Volumes/boot/wpa_supplicant.conf
-    mode: 0666

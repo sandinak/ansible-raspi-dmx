@@ -1,0 +1,15 @@
+---
+
+pxdriver_packages: 
+  - ola 
+  - ola-python
+
+pxdriver_pip3_packages:
+  - python-daemon
+
+# ArtNet Universe ID, starting index = 0 
+pxdriver_oid: "{{ oid | default(0) }}"
+
+# number of LEDs on the string that we're configuring
+# we use this to shorten loops for efficency
+pxdriver_led_count: "{{ led_count | default(10) }}"

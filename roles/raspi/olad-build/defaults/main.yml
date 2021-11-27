@@ -1,0 +1,42 @@
+---
+olad_gitrepos: 
+  default: https://github.com/OpenLightingProject/ola.git
+  ws2812: https://github.com/cpresser/ola/tree/ws2812-spi
+
+# https://opendmx.net/index.php/OLA_on_Linux
+olad_packages:
+  - libcppunit-dev 
+  - uuid-dev 
+  - pkg-config 
+  - libncurses5-dev 
+  - libtool 
+  - autoconf 
+  - automake  
+  - g++ 
+  - libmicrohttpd-dev  
+  - libmicrohttpd12
+  - protobuf-compiler 
+  - python-protobuf 
+  - libprotobuf-dev 
+  - libprotoc-dev 
+  - zlib1g-dev 
+  - bison 
+  - flex 
+  - make 
+  - libftdi-dev  
+  - libftdi1 
+  - libusb-1.0-0-dev 
+  - liblo-dev 
+  - libavahi-client-dev
+
+
+# auto_ptr is and has been deprecated.. but now gives warning in cpp5.x 
+compile_env_vars:
+  CPPFLAGS: -Wno-deprecated-declarations
+
+olad_build_commands:
+  - autoreconf -i
+  - ./configure --disable-all-plugins --enable-spi --enable-artnet # --disable-fatal-warnings
+  - make -j {{ansible_processor_vcpus}}
+  - make check
+  - make install

@@ -1,0 +1,16 @@
+---
+- name: create records for hosts
+  delegate_to: router
+  blockinfile: 
+    path: /etc/config/dhcp
+    marker: "# {mark} ansible managed - {{item}}"
+    block:
+      config host
+        option mac '{{hostvars[item].macaddressess}}'
+        option name '{{item}}'
+        option dns '1'
+        option ip '{{hostvars[item].ipaddress | default(lookup('dig',item)) }}'
+  loop: "{{ groups['ip_managed'] }}"
+  loop_control:
+    label: "{{item}}"
+  when: hostvars[item].macaddresses is defined

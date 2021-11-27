@@ -1,0 +1,7 @@
+---
+- name: setup routers
+  hosts: ip_managed
+  gather_facts: true
+  serial: 1
+  roles:
+    - role: raspi/router_addressing

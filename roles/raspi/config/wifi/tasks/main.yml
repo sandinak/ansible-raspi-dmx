@@ -1,0 +1,11 @@
+---
+- name: update wpa_supplicant
+  become: yes
+  template:
+    src: wpa_supplicant.conf.j2
+    dest: /etc/wpa_supplicant/wpa_supplicant.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart networking
+    

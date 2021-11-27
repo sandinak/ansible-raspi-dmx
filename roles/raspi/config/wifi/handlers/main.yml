@@ -1,0 +1,7 @@
+---
+- name: restart networking
+  become: yes
+  systemd:
+    name: networking
+    state: restarted
+    enabled: true

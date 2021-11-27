@@ -1,2 +1,9 @@
 ---
 hosts_file: /etc/hosts.show
+
+p_mac_addrs:
+  - "{{ansible_wlan0.perm_macaddress | default(ansible_wlan0.macaddress) }}"
+  - "{{ansible_eth0.perm_macaddress | default(ansible_eth0.macaddress) | default(omit) }}"
+
+macaddresses: "{{ p_mac_addrs | join(',') }}"
+...

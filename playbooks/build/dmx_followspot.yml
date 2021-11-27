@@ -1,0 +1,35 @@
+---
+- name: Configure a raspi instance for DMX followspot
+  hosts: dmx_followspot
+  become: yes
+
+  roles: 
+    - role: raspi/dmx_followspot
+
+    # configure olad plugins
+    - role: ola/olad/configure
+      tags: dmx
+      plugins: "{{ola_plugins}}" 
+
+    # patch ARTNet to uartDMX on configured universe
+    - role: ola/patch
+      tags: 
+       - dmx
+       - patch
+      type: in
+      ola_port: 0
+      plugin: "{{dmx_fs.input.plugin}}"
+      device: "{{dmx_fs.input.device | default(omit)}}"
+      universe: "{{dmx_fs.input.universe}}"
+        
+    - role: ola/patch
+      tags: 
+        - dmx
+        - patch
+      type: out
+      ola_port: 0
+      plugin: "{{dmx_fs.output.plugin}}"
+      device: "{{dmx_fs.output.device | default(omit)}}"
+      universe: "{{dmx_fs.output.universe}}"
+        
+  
