@@ -1,6 +1,6 @@
 show:
   vars:
-    env_network: 172.18.0.0/24
+    env_network: 172.18.1.0/24
     wifi_ssid: LIGHTS
   children:
     routers:
@@ -13,66 +13,56 @@ props:
     scepters: 
     steps:
 
+raspi:
+  children:
+    scepters:
+    steps:
+
 sceptres:
   hosts:
     sceptre-1:
-      macaddresses: B8:27:EB:3A:90:08
-        # sceptre-2: 
-        # sceptre-3: 
-        # sceptre-4: 
 
 steps:
   vars:
     network: "{{env_network | ipsubnet(27,2) }}"
-  children: 
-    hosts:
-      ds-1:
-        macaddresses: B8:27:EB:33:B9:2B
-        ipaddress: "{{network|ipaddr(0)|ipaddr('address')}}"
-      ds-2:
-        macaddresses: B8:27:EB:F3:AB:10
-        ipaddress: "{{network|ipaddr(1)|ipaddr('address')}}"
-      ds-3:
-        macaddresses: B8:27:EB:39:15:DC
-        ipaddress: "{{network|ipaddr(2)|ipaddr('address')}}"
-      ds-4:
-        macaddresses: B8:27:EB:23:3C:7B,B8:27:EB:76:69:2E
-        ipaddress: "{{network|ipaddr(3)|ipaddr('address')}}"
-    
-      cs-1:
-        macaddresses: B8:27:EB:AE:EC:B9
-        ipaddress: "{{network|ipaddr(4)|ipaddr('address')}}"
-      cs-2:
-        macaddresses: B8:27:EB:A5:36:03 
-        ipaddress: "{{network|ipaddr(5)|ipaddr('address')}}"
-      cs-3:
-        macaddresses: 8:27:eb:12:6c:7b 
-        ipaddress: "{{network|ipaddr(6)|ipaddr('address')}}"
-      cs-4:
-        macaddresses: B8:27:EB:A4:DF:70,B8:27:EB:F1:8A:25
-        ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
+    ansible_ssh_host: "{{ ipaddress }}"
+    ansible_ssh_user: pi
+  hosts:
+    ds-1:
+      ipaddress: "{{network|ipaddr(0)|ipaddr('address')}}"
+    ds-2:
+      ipaddress: "{{network|ipaddr(1)|ipaddr('address')}}"
+    ds-3:
+      ipaddress: "{{network|ipaddr(2)|ipaddr('address')}}"
+    ds-4:
+      ipaddress: "{{network|ipaddr(3)|ipaddr('address')}}"
+  
+    cs-1:
+      ipaddress: "{{network|ipaddr(4)|ipaddr('address')}}"
+    cs-2:
+      ipaddress: "{{network|ipaddr(5)|ipaddr('address')}}"
+    cs-3:
+      ipaddress: "{{network|ipaddr(6)|ipaddr('address')}}"
+    cs-4:
+      ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
+    cs-5:
+      ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
+    cs-6:
+      ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
 
-      us-1:
-        macaddresses: b8:27:eb:23:3c:7b
-        ipaddress: "{{network|ipaddr(8)|ipaddr('address')}}"
-      us-2:
-        macaddresses: B8:27:EB:F3:AB:10 
-        ipaddress: "{{network|ipaddr(9)|ipaddr('address')}}"
-      us-3:
-        macaddresses: B8:27:EB:32:4A:CF,B8:27:EB:67:1F:9A
-        ipaddress: "{{network|ipaddr(10)|ipaddr('address')}}"
-      us-4:
-        macaddresses: b8:27:eb:65:6b:43 
-        ipaddress: "{{network|ipaddr(11)|ipaddr('address')}}"
-
-ip_managed:
-  children: 
-    steps:
+    us-1:
+      ipaddress: "{{network|ipaddr(8)|ipaddr('address')}}"
+    us-2:
+      ipaddress: "{{network|ipaddr(9)|ipaddr('address')}}"
 
 routers:
-  gw.show:
-    vars:
-      ansible_ssh_host: 172.18.1.254
+  hosts:
+    gw.show:
+      vars:
+        ansible_ssh_host: 172.18.1.254
+    gw.doghouse:
+      vars:
+        ansible_ssh_host: 172.18.1.1
 
 raspi:
   children:

@@ -56,8 +56,6 @@
     - raspi/config/base
     - raspi/config/wifi
     - role: raspi/config/bonding
-      when:
-        - macaddresses is defined
-        -  "',' in macaddresses"
+      tags: bonding
     - raspi/iw_config
    

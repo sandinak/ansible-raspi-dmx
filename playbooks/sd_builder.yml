@@ -1,18 +1,10 @@
 ---
 - name: setup raspi config
-  hosts: pi_builder
+  hosts: sd_builder
   gather_facts: no
   vars:
-    iso_path: /Users/branson/Documents/Images/2021-10-30-raspios-bullseye-armhf-lite.img
+    iso_path: "/Users/branson/Documents/Images/2021-10-30-raspios-bullseye-armhf-lite.img"
 
-- name: setup raspi sd card
-  hosts: sd_builder
-  pre_tasks:
-    - name: check age of iso
-      stat: 
-        path: "{{iso_path}}"
-      register: _iso_file
-       
   roles: 
     - sd_builder/image_burn
     - sd_builder/enable_ssh

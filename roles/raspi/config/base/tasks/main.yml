@@ -21,17 +21,17 @@
     state: present
   when: pip_packages is defined
  
-- name: run firmware updates
-  become: yes
-  expect: 
-    command: rpi-update
-    responses:
-      'proceed?':
-        - y
-    timeout: 300
-  register: _rpi_update
-  changed_when: '"reboot needed" in _rpi_update'
-  notify: reboot raspi 
+#- name: run firmware updates
+#  become: yes
+#  expect: 
+#    command: rpi-update
+#    responses:
+#      'proceed?':
+#        - y
+#    timeout: 300
+#  register: _rpi_update
+#  changed_when: '"reboot needed" in _rpi_update'
+#  notify: reboot raspi 
 
 - name: add default lines to config.txt
   become: yes

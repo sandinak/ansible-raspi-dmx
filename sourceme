@@ -89,8 +89,8 @@ while test $# -gt 0; do
       shift
       ;;
     *)
-      if [ -n "$2" ]; then 
-        export inv=$2
+      if [ -n "$1" ]; then 
+        export inv=$1
         echo "looking for ${inv} for inventory."
       fi
       shift

@@ -23,4 +23,4 @@ raspi_packages:
   - lsof
   - tcpdump
   - nmap
-  - python-pip
+  - python3-pip

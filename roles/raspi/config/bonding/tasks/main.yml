@@ -8,9 +8,9 @@
 
 - name: configure bonding for the kernel
   become: yes
-  copy:
-    dest: /etc/modprobe.d/bonding.conf
-    content: "options bonding {{bonding_options | join(' ') }}\n"
+  lineinfile:
+    path: /etc/modules-load.d/modules.conf
+    line: "bonding"
   notify: reboot raspi
 
 - name: configure network via /etc/network/interfaces
@@ -34,12 +34,12 @@
 
 - name: configure static ip from show ip if so configured
   become: yes
-  when: show_dmx_ip is defined
+  when: ipaddress is defined
   blockinfile:
     path: /etc/dhcpcd.conf
     block: |
       interface bond0
-      static ip_address={{show_dmx_ip}}/{{ net_mask | ipaddr('prefix') }}
+      static ip_address={{ipaddress}}/{{ net_mask | ipaddr('prefix') }}
       static routers={{ansible_default_ipv4.gateway}}
       static domain_name_servers={{ansible_dns.nameservers | join(' ')}}
     
