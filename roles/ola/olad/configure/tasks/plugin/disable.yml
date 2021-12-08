@@ -1,4 +1,5 @@
 - name: disable {{plugin_name}}
+  become: yes
   lineinfile: 
     path: /etc/ola/ola-{{plugin_name}}.conf
     line: "enabled = false"

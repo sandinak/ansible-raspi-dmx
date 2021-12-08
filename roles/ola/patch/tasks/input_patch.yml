@@ -1,45 +1,47 @@
 ---
-- name: '{{plugin}} - get plugin id'
+- name: '{{plugin}} - input -get plugin id'
   shell: ola_plugin_info | grep -i {{plugin}} | awk '{print $1}'
   register: _plugin_id
   changed_when: false
 
-- name: '{{plugin}} - get info on plugin id {{_plugin_id.stdout}}'
-  shell: ola_dev_info -p {{_plugin_id.stdout}} 
-  changed_when: false
-  register: _device_info
-   
-- name: '{{plugin}} - get info on plugin id {{_plugin_id.stdout}}'
+- name: '{{plugin}} - input - get info on plugin id {{_plugin_id.stdout}}'
   shell: ola_dev_info -p {{_plugin_id.stdout}} 
   changed_when: false
   register: _device_info
 
-- name: '{{plugin}} - get device id'
+- debug: var=_device_info.stdout
+   
+- name: '{{plugin}} - input - get info on plugin id {{_plugin_id.stdout}}'
+  shell: ola_dev_info -p {{_plugin_id.stdout}} 
+  changed_when: false
+  register: _device_info
+
+- name: '{{plugin}} - input - get device id'
   set_fact:
     _device_id:   '{{ _device_info.stdout_lines | 
                       select("match", "Device") |
                       first |
                       regex_replace(".*Device ([0-9]+).*","\1") }}'
 
-- name: setting up for port {{ port }} 
+- name: input - setting up for port {{ port }} 
   set_fact:
     _port_regex: "port {{port}}"
 
-- name: '{{plugin}} - get {{_device_id}} port id ({{port}})'
+- name: '{{plugin}} - input - get {{_device_id}} port id ({{port}})'
   set_fact:
     _port_id:     '{{ _device_info.stdout_lines | 
                       select("search", _port_regex) |
                       first |
                       regex_replace(".*port ([0-9]+).*","\1") }}'
 
-- name: '{{plugin}} - get {{_device_id}}:{{_port_id}} universe id'
+- name: '{{plugin}} - input - get {{_device_id}}:{{_port_id}} universe id'
   set_fact:
-    _universe_id: '{{ _device_info.stdout_lines | 
+    _universe_id: '{{ _device_info.stdout_lines | default([]) | 
                       select("search", _port_regex) |
                       first |
                       regex_replace(".*universe ([0-9]+).*","\1") }}'
                         
-- name: '{{plugin}} - patching input {{_device_id}}:{{_port_id}} to {{universe}}'
+- name: '{{plugin}} - input - patching input {{_device_id}}:{{_port_id}} to {{universe}}'
   shell: 
     ola_patch -i
       -d {{_device_id}} 

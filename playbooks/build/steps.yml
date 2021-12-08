@@ -4,18 +4,20 @@
   tags: 
     - steps 
   gather_facts: yes
+  vars:
+    ansible_ssh_user: pi
   roles:
     # configure bonding cause we have 2 NICs
-    - raspi/bonding
+    - raspi/config/bonding
 
     # update the configured router with address space config
-    - role: raspi/router_addressing
-      vars:
-        ansible_ssh_user: "{{lookup('env','USER')}}"
-      tags:
-        - mac
-        - ethers
-      delegate_to: gw.doghouse
+    #- role: raspi/router_addressing
+    #  vars:
+    #    ansible_ssh_user: "{{lookup('env','USER')}}"
+    #  tags:
+    #    - mac
+    #    - ethers
+    #  delegate_to: gw.doghouse
 
     # configure fadecandy
     - role: fadecandy
@@ -26,7 +28,7 @@
       tags: ola
       plugins: "{{ola_plugins}}"
 
-- import_playbook: addressing.yml
+# - import_playbook: addressing.yml
 
 - name: Patch step controller
   hosts: steps

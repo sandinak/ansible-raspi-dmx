@@ -10,7 +10,8 @@
   become: yes
   lineinfile:
     path: /etc/modules-load.d/modules.conf
-    line: "bonding"
+    line: bonding
+    regexp: '^bonding'
   notify: reboot raspi
 
 - name: configure network via /etc/network/interfaces
@@ -20,27 +21,32 @@
     dest: /etc/network/interfaces
   notify: reboot raspi
 
-- name: configure startup arpping
+- name: disable /etc/dhcpcd
   become: yes
-  blockinfile:
-    path: /etc/rc.local
-    insertbefore: '^exit 0.*'
-    block: 
-      ( sleep 5; 
-        arping -i eth0 -c 1 -S {{ansible_default_ipv4.address}} {{ansible_default_ipv4.gateway}} 2>&1 > /dev/null
-      ) &
-      dhclient -4 bond0
-  notify: reboot raspi
+  service: 
+    name: dhcpcd 
+    state: stopped
+    enabled: false
+# - name: configure startup arpping
+#   become: yes
+#   blockinfile:
+#     path: /etc/rc.local
+#     insertbefore: '^exit 0.*'
+#     block: 
+#       ( sleep 5; 
+#         arping -i eth0 -c 1 -S {{ansible_default_ipv4.address}} {{ansible_default_ipv4.gateway}} 2>&1 > /dev/null
+#       ) &
+#       # dhclient -4 bond0
+#   notify: reboot raspi
 
-- name: configure static ip from show ip if so configured
-  become: yes
-  when: ipaddress is defined
-  blockinfile:
-    path: /etc/dhcpcd.conf
-    block: |
-      interface bond0
-      static ip_address={{ipaddress}}/{{ net_mask | ipaddr('prefix') }}
-      static routers={{ansible_default_ipv4.gateway}}
-      static domain_name_servers={{ansible_dns.nameservers | join(' ')}}
+# - name: configure static ip from show ip if so configured
+#   become: yes
+#   when: ipaddress is defined
+#   blockinfile:
+#     path: /etc/dhcpcd.conf
+#     block: |
+#       interface bond0
+#       static ip_address={{ipaddress}}/{{ net_mask | ipaddr('prefix') }}
+#       static routers={{ansible_default_ipv4.gateway}}
+#       static domain_name_servers={{ansible_dns.nameservers | join(' ')}}
     
-

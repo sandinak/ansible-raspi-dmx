@@ -15,3 +15,4 @@ PyNaCl
 PyYAML
 six
 python-gilt
+netaddr

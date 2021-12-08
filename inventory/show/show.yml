@@ -27,6 +27,7 @@ steps:
     network: "{{env_network | ipsubnet(27,2) }}"
     ansible_ssh_host: "{{ ipaddress }}"
     ansible_ssh_user: pi
+    ola_port: 0
   hosts:
     ds-1:
       ipaddress: "{{network|ipaddr(0)|ipaddr('address')}}"
@@ -37,23 +38,23 @@ steps:
     ds-4:
       ipaddress: "{{network|ipaddr(3)|ipaddr('address')}}"
   
-    cs-1:
+    cs-1a:
       ipaddress: "{{network|ipaddr(4)|ipaddr('address')}}"
-    cs-2:
+    cs-1b:
       ipaddress: "{{network|ipaddr(5)|ipaddr('address')}}"
-    cs-3:
+    cs-2:
       ipaddress: "{{network|ipaddr(6)|ipaddr('address')}}"
-    cs-4:
+    cs-3:
       ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
-    cs-5:
-      ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
-    cs-6:
-      ipaddress: "{{network|ipaddr(7)|ipaddr('address')}}"
+    cs-4a:
+      ipaddress: "{{network|ipaddr(8)|ipaddr('address')}}"
+    cs-4b:
+      ipaddress: "{{network|ipaddr(9)|ipaddr('address')}}"
 
     us-1:
-      ipaddress: "{{network|ipaddr(8)|ipaddr('address')}}"
+      ipaddress: "{{network|ipaddr(10)|ipaddr('address')}}"
     us-2:
-      ipaddress: "{{network|ipaddr(9)|ipaddr('address')}}"
+      ipaddress: "{{network|ipaddr(11)|ipaddr('address')}}"
 
 routers:
   hosts:
@@ -64,7 +65,3 @@ routers:
       vars:
         ansible_ssh_host: 172.18.1.1
 
-raspi:
-  children:
-    steps:
-    sceptres:

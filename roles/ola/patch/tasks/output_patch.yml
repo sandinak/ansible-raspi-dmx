@@ -34,7 +34,7 @@
 
 - name: '{{plugin}} - get {{_device_id}}:{{_port_id}} universe id'
   set_fact:
-    _universe_id: '{{ _device_info.stdout_lines | 
+    _universe_id: '{{ _device_info.stdout_lines | default([]) | 
                       select("search", _port_regex) |
                       first |
                       regex_replace(".*universe ([0-9]+).*","\1") }}'

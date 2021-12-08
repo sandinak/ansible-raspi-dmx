@@ -15,8 +15,14 @@ iface wlan0 inet manual
         bond-mode       active-backup
 
 auto bond0
-iface bond0 inet manual
+{% if ipaddress %} 
+iface bond0 inet static
+      address {{ ipaddress | ipaddr('address') }}
+      netmask {{ env_network | ipaddr('netmask') }}
+      gateway {{ env_network | ipaddr('net')  | ipaddr(1) | ipaddr('address') }}
+{% else %}
 iface bond0 inet dhcp
+{% endif -%} 
 {% for option in bonding_bond0_interface_options %}
-        {{option}}
+      {{option}}
 {% endfor %}

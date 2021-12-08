@@ -1,15 +1,17 @@
 ---
-- name: install packages
-  apt: 
-    name: "{{item}}"
-  with_items: "{{ola_packages}}"
+- name: install packages {{ola_packages}}
+  become: yes
+  package: 
+    name: "{{ola_packages}}"
   
 - name: configure server
+  become: yes
   template: 
     src: ola-server.conf.j2
     dest: /etc/ola/ola-server.conf
 
 - name: configure startup
+  become: yes
   copy: 
     src: etc/systemd/system/olad.service
     dest: /etc/systemd/system/olad.service

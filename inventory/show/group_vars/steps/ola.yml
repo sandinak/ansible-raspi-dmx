@@ -1,4 +1,7 @@
 ---
+# set the default OID .. this should always be 0 for any fixture
+oid: 0
+
 ola_plugins:
   artnet:
     config:
@@ -6,9 +9,6 @@ ola_plugins:
       - always_broadcast=yes
       - long_name={{inventory_hostname}} Step 
       - short_name={{inventory_hostname}}
-
-# set the default OID .. this should always be 0 for any fixture
-oid: 0
 
   # our config here is 
   # - each pixel is 3 channels (rgb) 
@@ -22,9 +22,9 @@ oid: 0
   openpixelcontrol: 
     config: 
       - enabled=true
-      - target=127.0.0.1:{{ ola_opc_port }}
-      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=0
-      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=1
-      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=2
-      - target_{{ ola_opc_ip }}:{{ ola_opc_port }}_channel=3
+      - target={{ ipaddress }}:{{ ola_opc_port }}
+      - target_{{ ipaddress }}:{{ ola_opc_port }}_channel=0
+      - target_{{ ipaddress }}:{{ ola_opc_port }}_channel=1
+      - target_{{ ipaddress }}:{{ ola_opc_port }}_channel=2
+      - target_{{ ipaddress }}:{{ ola_opc_port }}_channel=3
 

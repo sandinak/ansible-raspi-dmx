@@ -1,5 +1,6 @@
 
 - name: check for template
+  become: yes
   block:
     - name: configure with {{plugin_name}} template
       template: 
